@@ -10,6 +10,7 @@ pub mod ldf_signal_encoding_types;
 pub mod ldf_signal_representation;
 pub mod ldf_signals;
 
+use crate::ldf::ldf_comment::skip_whitespace_and_comments;
 use crate::ldf::ldf_diagnostic_frames::{parse_ldf_diagnostic_frames, LdfDiagnosticFrame};
 use crate::ldf::ldf_diagnostic_signals::{parse_ldf_diagnostic_signals, LdfDiagnosticSignal};
 use crate::ldf::ldf_frames::{parse_ldf_frames, LdfFrame};
@@ -57,17 +58,27 @@ impl LinLdf {
     /// (<Signal_representation_def>)
     /// ```
     pub fn parse(s: &str) -> Result<LinLdf, &'static str> {
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, header) = parse_ldf_header(s).map_err(|_| "Failed to parse header")?;
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, nodes) = parse_ldf_nodes(s).map_err(|_| "Failed to parse Nodes section")?;
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, signals) = parse_ldf_signals(s).map_err(|_| "Failed to parse Signals section (required)")?;
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, diagnostic_signals) = parse_ldf_diagnostic_signals(s).unwrap_or((s, Vec::new()));
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, frames) = parse_ldf_frames(s).map_err(|_| "Failed to parse Frames section")?;
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, diagnostic_frames) = parse_ldf_diagnostic_frames(s).unwrap_or((s, Vec::new()));
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, node_attributes) =
             parse_ldf_node_attributes(s).map_err(|_| "Failed to parse Node_attributes section")?;
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, schedule_tables) =
             parse_ldf_schedule_tables(s).map_err(|_| "Failed to parse Schedule_tables section")?;
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, signal_encoding_types) = parse_ldf_signal_encoding_types(s).unwrap_or((s, Vec::new()));
+        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (_, signal_representations) = parse_ldf_signal_representation(s).unwrap_or((s, Vec::new()));
 
         Ok(LinLdf {
@@ -94,15 +105,19 @@ mod tests {
     #[test]
     fn test_parse() {
         let input = r#"
+            /* MY BLOCK COMMENT */
+            
             LIN_description_file ; 
             LIN_protocol_version = "2.1" ; 
             LIN_language_version = "2.1" ; 
             LIN_speed = 19.2 kbps ;
-
+            
             Nodes {
                 Master: Master, 5 ms, 0.1 ms ;
                 Slaves: Slave1, Slave2, Slave3 ;
             }
+
+            // MY LINE COMMENT
 
             Signals {
                 Signal1: 10, 0, Master, Slave1 ;
