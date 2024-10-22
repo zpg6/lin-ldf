@@ -1,6 +1,6 @@
 use crate::ldf::ldf_comment::skip_whitespace;
 use nom::{
-    bytes::complete::{tag, take_until, take_while},
+    bytes::complete::{tag, take_while},
     IResult,
 };
 
@@ -38,7 +38,7 @@ pub struct LdfFrameDelay {
 Schedule_tables {
   AllFrames {
      Frame1 delay 10 ms ;
-     Frame2 delay 10 ms ;
+     Frame2   delay 10.0 ms ;
   }
 }
 */
@@ -75,8 +75,8 @@ pub fn parse_ldf_schedule_tables(s: &str) -> IResult<&str, Vec<LdfScheduleTable>
             // - May be any number of spaces before and after the "ms" tag
             // - May be any number of spaces before and after the semicolon
             let (s, _) = skip_whitespace(remaining)?;
-            let (s, frame_name) = take_until(" ")(s)?;
-            let (s, _) = tag(" ")(s)?;
+            let (s, frame_name) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
+            let (s, _) = skip_whitespace(s)?;
             let (s, _) = tag("delay")(s)?;
             let (s, _) = skip_whitespace(s)?;
             let (s, frame_time) = take_while(|c: char| c.is_numeric() || c == '.')(s)?;
@@ -120,7 +120,7 @@ mod tests {
             Schedule_tables {
                 AllFrames {
                     Frame1 delay 10 ms ;
-                    Frame2 delay 10 ms ;
+                    Frame2   delay 10.0 ms ;
                 }
             }
         "#;
