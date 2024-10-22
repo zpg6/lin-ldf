@@ -26,7 +26,7 @@ use nom::{
 ///     LIN_protocol = "2.1" ;
 ///     configured_NAD = 0xC ;
 ///     initial_NAD = 0xC ;
-///     product_id = 0x124, 0x4568, 6 ;
+///     product_id = 0x124, 0x4568, 0x66 ;
 ///     response_error = Signal2 ;
 ///     P2_min = 100 ms ;
 ///     ST_min = 0 ms ;
@@ -143,7 +143,7 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(",")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, variant) = take_while(|c: char| c.is_alphanumeric())(s)?;
+        let (s, variant) = take_while(|c: char| c.is_alphanumeric() || c == 'x')(s)?;
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(";")(s)?;
 
@@ -233,7 +233,13 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
             initial_nad: u8::from_str_radix(&initial_nad[2..], 16).unwrap(),
             supplier_id: u16::from_str_radix(&supplier_id[2..], 16).unwrap(),
             function_id: u16::from_str_radix(&function_id[2..], 16).unwrap(),
-            variant: variant.parse().unwrap(),
+            variant: {
+                if variant.starts_with("0x") {
+                    u8::from_str_radix(&variant[2..], 16).unwrap()
+                } else {
+                    variant.parse().unwrap()
+                }
+            },
             response_error: response_error.to_string(),
             p2_min: p2_min.to_string() + " ms",
             st_min: st_min.to_string() + " ms",
@@ -278,7 +284,7 @@ mod tests {
                     LIN_protocol = "2.1" ;
                     configured_NAD = 0xC ;
                     initial_NAD = 0xC ;
-                    product_id = 0x124, 0x4568, 6 ;
+                    product_id = 0x124, 0x4568, 0x66 ;
                     response_error = Signal2 ;
                     P2_min = 100 ms ;
                     ST_min = 0 ms ;
@@ -318,7 +324,7 @@ mod tests {
         assert_eq!(node_attributes[1].initial_nad, 0xC);
         assert_eq!(node_attributes[1].supplier_id, 0x124);
         assert_eq!(node_attributes[1].function_id, 0x4568);
-        assert_eq!(node_attributes[1].variant, 6);
+        assert_eq!(node_attributes[1].variant, 0x66);
         assert_eq!(node_attributes[1].response_error, "Signal2");
         assert_eq!(node_attributes[1].p2_min, "100 ms");
         assert_eq!(node_attributes[1].st_min, "0 ms");

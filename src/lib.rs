@@ -66,7 +66,7 @@
 //!     Signal1, 0 ;
 //!     Signal2, 10 ;
 //!   }
-//!   Frame2: 1, Slave1, 8 {
+//!   Frame2: 0x16, Slave1, 8 {
 //!       Signal3, 0 ;
 //!       Signal4, 10 ;
 //!   }
@@ -92,7 +92,7 @@
 //!       LIN_protocol = "2.1" ;
 //!       configured_NAD = 0xC ;
 //!       initial_NAD = 0xC ;
-//!       product_id = 0x124, 0x4568, 6 ;
+//!       product_id = 0x124, 0x4568, 0x66 ;
 //!       response_error = Signal2 ;
 //!       P2_min = 100 ms ;
 //!       ST_min = 0 ms ;

@@ -191,7 +191,7 @@ mod tests {
                     LIN_protocol = "2.1" ;
                     configured_NAD = 0xC ;
                     initial_NAD = 0xC ;
-                    product_id = 0x124, 0x4568, 6 ;
+                    product_id = 0x124, 0x4568, 0x66 ;
                     response_error = Signal2 ;
                     P2_min = 100 ms ;
                     ST_min = 0 ms ;
@@ -330,7 +330,7 @@ mod tests {
         assert_eq!(ldf.node_attributes[1].initial_nad, 0xC);
         assert_eq!(ldf.node_attributes[1].supplier_id, 0x124);
         assert_eq!(ldf.node_attributes[1].function_id, 0x4568);
-        assert_eq!(ldf.node_attributes[1].variant, 6);
+        assert_eq!(ldf.node_attributes[1].variant, 0x66);
         assert_eq!(ldf.node_attributes[1].response_error, "Signal2");
         assert_eq!(ldf.node_attributes[1].p2_min, "100 ms");
         assert_eq!(ldf.node_attributes[1].st_min, "0 ms");
