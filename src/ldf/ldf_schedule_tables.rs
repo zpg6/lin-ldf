@@ -52,8 +52,6 @@ pub fn parse_ldf_schedule_tables(s: &str) -> IResult<&str, Vec<LdfScheduleTable>
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
 
-    // [Assumes no comments between the schedule tables tags]
-
     let mut schedule_tables = Vec::new();
     let mut remaining = s;
 

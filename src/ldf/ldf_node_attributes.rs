@@ -89,8 +89,6 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
 
-    // [Assumes no comments between the node_attributes tags]
-
     let mut node_attributes = Vec::new();
     let mut remaining = s;
 

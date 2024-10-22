@@ -86,8 +86,6 @@ pub fn parse_ldf_signals(s: &str) -> IResult<&str, Vec<LdfSignal>> {
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
 
-    // [Assumes no comments between the signals tags]
-
     let mut signals = Vec::new();
     let mut remaining = s;
     while !remaining.starts_with('}') {

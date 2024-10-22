@@ -49,8 +49,6 @@ pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag(";")(s)?;
 
-    // [Assumes no comments between the header tags]
-
     // `LIN_protocol_version = "2.1" ;` or `LIN_protocol_version = "2.1";` or ...
     // - May be any number of spaces before and after the "LIN_protocol_version" tag
     // - May be any number of spaces before and after the equal sign
@@ -70,8 +68,6 @@ pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
     let (s, _) = tag(";")(s)?;
 
     let lin_protocol_version = format!("{}.{}", protocol_major, protocol_minor);
-
-    // [Assumes no comments between the header tags]
 
     // `LIN_language_version = "2.1" ;` or `LIN_language_version = "2.1";` or ...
     // - May be any number of spaces before and after the "LIN_language_version" tag
@@ -93,8 +89,6 @@ pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
 
     let lin_language_version = format!("{}.{}", language_major, language_minor);
 
-    // [Assumes no comments between the header tags]
-
     // LIN_speed = 19.2 kbps ;
     // - May be any number of spaces before and after the "LIN_speed" tag
     // - May be any number of spaces before and after the equal sign
@@ -113,8 +107,6 @@ pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
     let (s, _) = tag(";")(s)?;
 
     let lin_speed = lin_speed.to_string();
-
-    // [Assumes no comments between the header tags]
 
     let (s, channel_name) = parse_channel_name(s).unwrap_or((s, None));
 

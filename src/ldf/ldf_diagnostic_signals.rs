@@ -49,8 +49,6 @@ pub fn parse_ldf_diagnostic_signals(s: &str) -> IResult<&str, Vec<LdfDiagnosticS
     let (s, _) = tag("Diagnostic_signals")(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
-
-    // [Assumes no comments between the diagnostic signals tags]
     let (s, _) = skip_whitespace(s)?;
 
     let mut diagnostic_signals = Vec::new();

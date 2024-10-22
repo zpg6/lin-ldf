@@ -21,7 +21,7 @@
 //! - [ ] (<Signal_groups_def>)
 //! - [x]  (<Signal_encoding_type_def>)
 //! - [x]  (<Signal_representation_def>)
-//! 
+//!
 //! (optional sections are in parentheses)
 //!
 //! # Example

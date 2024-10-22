@@ -85,7 +85,6 @@ pub fn parse_ldf_diagnostic_frames(s: &str) -> IResult<&str, Vec<LdfDiagnosticFr
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
 
-    // [Assumes no comments between the diagnostic frames tags]
     let (s, _) = skip_whitespace(s)?;
 
     let mut diagnostic_frames = Vec::new();
@@ -105,8 +104,6 @@ pub fn parse_ldf_diagnostic_frames(s: &str) -> IResult<&str, Vec<LdfDiagnosticFr
         let frame_id = u8::from_str_radix(frame_id, 16).unwrap();
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag("{")(s)?;
-
-        // [Assumes no comments between the diagnostic frame name and the signals]
         let (s, _) = skip_whitespace(s)?;
 
         let mut signals = Vec::new();

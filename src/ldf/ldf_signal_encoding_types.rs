@@ -72,8 +72,6 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
     let (s, _) = tag("Signal_encoding_types")(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
-
-    // [Assumes no comments between the signal encoding types tags]
     let (s, _) = skip_whitespace(s)?;
 
     let mut signal_encoding_types = Vec::new();

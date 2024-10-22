@@ -10,7 +10,7 @@ pub mod ldf_signal_encoding_types;
 pub mod ldf_signal_representation;
 pub mod ldf_signals;
 
-use crate::ldf::ldf_comment::skip_whitespace_and_comments;
+use crate::ldf::ldf_comment::skip_whitespace;
 use crate::ldf::ldf_diagnostic_frames::{parse_ldf_diagnostic_frames, LdfDiagnosticFrame};
 use crate::ldf::ldf_diagnostic_signals::{parse_ldf_diagnostic_signals, LdfDiagnosticSignal};
 use crate::ldf::ldf_frames::{parse_ldf_frames, LdfFrame};
@@ -58,27 +58,27 @@ impl LinLdf {
     /// (<Signal_representation_def>)
     /// ```
     pub fn parse(s: &str) -> Result<LinLdf, &'static str> {
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, header) = parse_ldf_header(s).map_err(|_| "Failed to parse header")?;
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, nodes) = parse_ldf_nodes(s).map_err(|_| "Failed to parse Nodes section")?;
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, signals) = parse_ldf_signals(s).map_err(|_| "Failed to parse Signals section (required)")?;
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, diagnostic_signals) = parse_ldf_diagnostic_signals(s).unwrap_or((s, Vec::new()));
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, frames) = parse_ldf_frames(s).map_err(|_| "Failed to parse Frames section")?;
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, diagnostic_frames) = parse_ldf_diagnostic_frames(s).unwrap_or((s, Vec::new()));
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, node_attributes) =
             parse_ldf_node_attributes(s).map_err(|_| "Failed to parse Node_attributes section")?;
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, schedule_tables) =
             parse_ldf_schedule_tables(s).map_err(|_| "Failed to parse Schedule_tables section")?;
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, signal_encoding_types) = parse_ldf_signal_encoding_types(s).unwrap_or((s, Vec::new()));
-        let (s, _) = skip_whitespace_and_comments(s).map_err(|_| "Failed to skip whitespace and comments")?;
+        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (_, signal_representations) = parse_ldf_signal_representation(s).unwrap_or((s, Vec::new()));
 
         Ok(LinLdf {
@@ -129,17 +129,17 @@ mod tests {
             }
 
             Diagnostic_signals {
-                MasterReqB0: 8, 0 ;
+                MasterReqB0: 8, 0 ;   /* MID SECTION COMMENT */
                 MasterReqB1: 8, 0 ;
                 MasterReqB2: 8, 0 ;
                 MasterReqB3: 8, 0 ;
                 MasterReqB4: 8, 0 ;
-                MasterReqB5: 8, 0 ;
+                MasterReqB5: 8, 0 ;   /* MID SECTION COMMENT */
             }
 
             Frames {
                 Frame1: 0, Master, 8 {
-                    Signal1, 0 ;
+                    Signal1, 0 ;      /* MID SECTION COMMENT */
                     Signal2, 10 ;
                 }
                 Frame2: 1, Slave1, 8 {

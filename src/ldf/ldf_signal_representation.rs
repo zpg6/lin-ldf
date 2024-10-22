@@ -36,8 +36,6 @@ pub fn parse_ldf_signal_representation(s: &str) -> IResult<&str, Vec<LdfSignalRe
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
 
-    // [Assumes no comments between the signal representation tags]
-
     let mut signal_representations = Vec::new();
     let mut remaining = s;
 

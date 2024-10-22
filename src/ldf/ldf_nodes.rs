@@ -57,8 +57,6 @@ pub fn parse_ldf_nodes(s: &str) -> IResult<&str, LdfNodes> {
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
 
-    // [Assumes no comments between the nodes tags]
-
     // `Master: Master, 5 ms, 0.1 ms ;` or `Master: Master, 5 ms, 0.1 ms;` or ...
     // - May be any number of spaces before and after the "Master" tag
     // - May be any number of spaces before and after the colon
@@ -94,8 +92,6 @@ pub fn parse_ldf_nodes(s: &str) -> IResult<&str, LdfNodes> {
         time_base: time_base.to_string() + " ms",
         jitter: jitter.to_string() + " ms",
     };
-
-    // [Assumes no comments between the nodes tags]
 
     // `Slaves: Slave1, Slave2, Slave3 ;` or `Slaves: Slave1, Slave2, Slave3;` or ...
     // - May be any number of spaces before and after the "Slaves" tag
