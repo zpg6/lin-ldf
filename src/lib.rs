@@ -2,32 +2,27 @@
 //!
 //! This library provides a parser for LIN (Local Interconnect Network) LDF (LIN Description File) files.
 //!
-//! ## Supported LIN versions (so far)
-//!
-//! - [ ] LIN 1.3
-//! - [ ] LIN 2.0
-//! - ✅  LIN 2.1
-//! - [ ] LIN 2.2
-//!
 //! ## Supported LDF sections (so far)
 //!  
-//! - ✅  LIN_protocol_version
-//! - ✅  LIN_language_version
-//! - ✅  LIN_speed
+//! - [x]  LIN_protocol_version
+//! - [x]  LIN_language_version
+//! - [x]  LIN_speed
 //! - [ ] (Channel_name)
-//! - ✅  Nodes
+//! - [x]  Nodes
 //! - [ ] (Node_composition)
-//! - ✅  Signals
-//! - ✅  (Diagnostic_signals)
-//! - ✅  Frames
+//! - [x]  Signals
+//! - [x]  (Diagnostic_signals)
+//! - [x]  Frames
 //! - [ ] (<Sporadic_frame_def>)
 //! - [ ] (<Event_triggered_frame_def>)
-//! - ✅  (Diagnostic_frames)
-//! - ✅  <Node_attributes_def>
-//! - ✅  <Schedule_table_def>
+//! - [x]  (Diagnostic_frames)
+//! - [x]  <Node_attributes_def>
+//! - [x]  <Schedule_table_def>
 //! - [ ] (<Signal_groups_def>)
-//! - ✅  (<Signal_encoding_type_def>)
-//! - ✅  (<Signal_representation_def>)
+//! - [x]  (<Signal_encoding_type_def>)
+//! - [x]  (<Signal_representation_def>)
+//! 
+//! (optional sections are in parentheses)
 //!
 //! # Example
 //!
@@ -39,6 +34,7 @@
 //! LIN_protocol_version = "2.1" ;
 //! LIN_language_version = "2.1" ;
 //! LIN_speed = 19.2 kbps ;
+//! Channel_name = "DB";
 //!
 //! Nodes {
 //!     Master: Master, 5 ms, 0.1 ms ;

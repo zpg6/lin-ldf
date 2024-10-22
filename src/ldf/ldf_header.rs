@@ -5,12 +5,13 @@ use nom::{
 
 use crate::ldf::ldf_comment::skip_whitespace;
 
-/// Header of a LIN Description File (LDF) for LIN 2.1
+/// Header of a LIN Description File (LDF) for LIN
 /// ```text
 /// LIN_description_file;
 /// LIN_protocol_version = "2.1" ;
 /// LIN_language_version = "2.1" ;
 /// LIN_speed = 19.2 kbps ;
+/// Channel_name = "DB";
 /// ```
 pub struct LdfHeader {
     /// LIN protocol version number (e.g. 2.1).
@@ -24,6 +25,9 @@ pub struct LdfHeader {
     /// LIN speed in kbps (e.g. "19.2"). Often called baud rate or bit rate.
     /// This sets the nominal bit rate for the cluster. It shall be in the range of 1 to 20 kbit/second.
     pub lin_speed: String,
+
+    /// Channel_name is optional and was added in LIN 2.2 version.
+    pub channel_name: Option<String>,
 }
 
 /*
@@ -31,6 +35,7 @@ LIN_description_file;
 LIN_protocol_version = "2.1" ;
 LIN_language_version = "2.1" ;
 LIN_speed = 19.2 kbps ;
+Channel_name = "DB";
 */
 
 pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
@@ -109,14 +114,39 @@ pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
 
     let lin_speed = lin_speed.to_string();
 
+    // [Assumes no comments between the header tags]
+
+    let (s, channel_name) = parse_channel_name(s).unwrap_or((s, None));
+
     Ok((
         s,
         LdfHeader {
             lin_protocol_version,
             lin_language_version,
             lin_speed,
+            channel_name,
         },
     ))
+}
+
+pub fn parse_channel_name(s: &str) -> IResult<&str, Option<String>> {
+    // Channel_name = "DB";
+    // - May be any number of spaces before and after the "Channel_name" tag
+    // - May be any number of spaces before and after the equal sign
+    // - May be any number of spaces before and after the channel name
+    // - May be any number of spaces before and after the semicolon
+    let (s, _) = skip_whitespace(s)?;
+    let (s, _) = tag("Channel_name")(s)?;
+    let (s, _) = skip_whitespace(s)?;
+    let (s, _) = tag("=")(s)?;
+    let (s, _) = skip_whitespace(s)?;
+    let (s, _) = tag("\"")(s)?;
+    let (s, channel_name) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
+    let (s, _) = tag("\"")(s)?;
+    let (s, _) = skip_whitespace(s)?;
+    let (s, _) = tag(";")(s)?;
+
+    Ok((s, Some(channel_name.to_string())))
 }
 
 #[cfg(test)]
@@ -130,11 +160,36 @@ mod tests {
             LIN_protocol_version = "2.1" ; 
             LIN_language_version = "2.1" ; 
             LIN_speed = 19.2 kbps ;
+            Channel_name = "DB";
         "#;
 
         let (_, header) = parse_ldf_header(s).unwrap();
         assert_eq!(header.lin_protocol_version, "2.1");
         assert_eq!(header.lin_language_version, "2.1");
         assert_eq!(header.lin_speed, "19.2");
+        assert_eq!(header.channel_name, Some("DB".to_string()));
+    }
+
+    #[test]
+    fn test_parse_channel_name() {
+        let s = r#"Channel_name = "DB";"#;
+        let (_, channel_name) = parse_channel_name(s).unwrap();
+        assert_eq!(channel_name, Some("DB".to_string()));
+    }
+
+    #[test]
+    fn test_parse_header_no_channel_name() {
+        let s = r#"
+            LIN_description_file ; 
+            LIN_protocol_version = "2.1" ; 
+            LIN_language_version = "2.1" ; 
+            LIN_speed = 19.2 kbps ;
+        "#;
+
+        let (_, header) = parse_ldf_header(s).unwrap();
+        assert_eq!(header.lin_protocol_version, "2.1");
+        assert_eq!(header.lin_language_version, "2.1");
+        assert_eq!(header.lin_speed, "19.2");
+        assert_eq!(header.channel_name, None);
     }
 }

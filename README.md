@@ -2,19 +2,12 @@
 
 This library provides a parser for LIN (Local Interconnect Network) LDF (LIN Description File) files.
 
-## Supported LIN versions (so far)
-
-- [ ] LIN 1.3
-- [ ] LIN 2.0
-- [x] LIN 2.1
-- [ ] LIN 2.2
-
 ## Supported LDF sections (so far)
 
 - [x] LIN_protocol_version
 - [x] LIN_language_version
 - [x] LIN_speed
-- [ ] (Channel_name)
+- [x] (Channel_name)
 - [x] Nodes
 - [ ] (Node_composition)
 - [x] Signals
@@ -41,6 +34,7 @@ LIN_description_file ;
 LIN_protocol_version = "2.1" ;
 LIN_language_version = "2.1" ;
 LIN_speed = 19.2 kbps ;
+Channel_name = "DB" ;
 
 Nodes {
     Master: Master, 5 ms, 0.1 ms ;
