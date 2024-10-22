@@ -142,7 +142,7 @@ mod tests {
                     Signal1, 0 ;      /* MID SECTION COMMENT */
                     Signal2, 10 ;
                 }
-                Frame2: 1, Slave1, 8 {
+                Frame2: 0x16, Slave1, 8 {
                     Signal3, 0 ;
                     Signal4, 10 ;
                 }
@@ -281,7 +281,7 @@ mod tests {
         assert_eq!(ldf.frames[0].signals[1].signal_name, "Signal2");
         assert_eq!(ldf.frames[0].signals[1].start_bit, 10);
         assert_eq!(ldf.frames[1].frame_name, "Frame2");
-        assert_eq!(ldf.frames[1].frame_id, 1);
+        assert_eq!(ldf.frames[1].frame_id, 0x16);
         assert_eq!(ldf.frames[1].published_by, "Slave1");
         assert_eq!(ldf.frames[1].frame_size, 8);
         assert_eq!(ldf.frames[1].signals.len(), 2);

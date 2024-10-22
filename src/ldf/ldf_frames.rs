@@ -11,7 +11,7 @@ use nom::{
 ///       Signal1, 0 ;
 ///       Signal2, 1 ;
 ///    }
-///    Frame2: 1, Slave1, 8 {
+///    Frame2: 0x16, Slave1, 8 {
 ///       Signal3, 0 ;
 ///       Signal4, 1 ;
 ///    }
@@ -41,7 +41,7 @@ pub struct LdfFrame {
 ///       Signal1, 0 ;
 ///       Signal2, 1 ;
 ///    }
-///    Frame2: 1, Slave1, 8 {
+///    Frame2: 0x16, Slave1, 8 {
 ///       Signal3, 0 ;
 ///       Signal4, 1 ;
 ///    }
@@ -61,7 +61,7 @@ Frames {
       Signal1, 0 ;
       Signal2, 1 ;
    }
-   Frame2: 1, Slave1, 8 {
+   Frame2: 0x16, Slave1, 8 {
       Signal3, 0 ;
       Signal4, 1 ;
    }
@@ -95,7 +95,7 @@ fn parse_ldf_frame(s: &str) -> IResult<&str, LdfFrame> {
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag(":")(s)?;
     let (s, _) = skip_whitespace(s)?;
-    let (s, frame_id) = take_while(|c: char| c.is_numeric())(s)?;
+    let (s, frame_id) = take_while(|c: char| c.is_numeric() || c == 'x')(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag(",")(s)?;
     let (s, _) = skip_whitespace(s)?;
@@ -123,7 +123,13 @@ fn parse_ldf_frame(s: &str) -> IResult<&str, LdfFrame> {
         remaining,
         LdfFrame {
             frame_name: frame_name.to_string(),
-            frame_id: frame_id.parse().unwrap(),
+            frame_id: {
+                if frame_id.starts_with("0x") {
+                    u8::from_str_radix(&frame_id[2..], 16).unwrap()
+                } else {
+                    frame_id.parse().unwrap()
+                }
+            },
             published_by: published_by.to_string(),
             frame_size: frame_size.parse().unwrap(),
             signals,
@@ -162,7 +168,7 @@ mod tests {
                 Signal1, 0 ;
                 Signal2, 10 ;
             }
-            Frame2: 1, Slave1, 8 {
+            Frame2: 0x16, Slave1, 8 {
                 Signal3, 0 ;
                 Signal4, 10 ;
             }
@@ -182,7 +188,7 @@ mod tests {
         assert_eq!(frames[0].signals[1].start_bit, 10);
 
         assert_eq!(frames[1].frame_name, "Frame2");
-        assert_eq!(frames[1].frame_id, 1);
+        assert_eq!(frames[1].frame_id, 0x16);
         assert_eq!(frames[1].published_by, "Slave1");
         assert_eq!(frames[1].frame_size, 8);
         assert_eq!(frames[1].signals.len(), 2);

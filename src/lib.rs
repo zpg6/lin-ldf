@@ -4,23 +4,23 @@
 //!
 //! ## Supported LDF sections (so far)
 //!  
-//! - [x]  LIN_protocol_version
-//! - [x]  LIN_language_version
-//! - [x]  LIN_speed
-//! - [ ] (Channel_name)
-//! - [x]  Nodes
+//! - [x] LIN_protocol_version
+//! - [x] LIN_language_version
+//! - [x] LIN_speed
+//! - [x] (Channel_name)
+//! - [x] Nodes
 //! - [ ] (Node_composition)
-//! - [x]  Signals
-//! - [x]  (Diagnostic_signals)
-//! - [x]  Frames
-//! - [ ] (<Sporadic_frame_def>)
-//! - [ ] (<Event_triggered_frame_def>)
-//! - [x]  (Diagnostic_frames)
-//! - [x]  <Node_attributes_def>
-//! - [x]  <Schedule_table_def>
-//! - [ ] (<Signal_groups_def>)
-//! - [x]  (<Signal_encoding_type_def>)
-//! - [x]  (<Signal_representation_def>)
+//! - [x] Signals
+//! - [x] (Diagnostic_signals)
+//! - [x] Frames
+//! - [ ] (Sporadic_frame)
+//! - [ ] (Event_triggered_frame)
+//! - [x] (Diagnostic_frames)
+//! - [x] Node_attributes
+//! - [x] Schedule_table
+//! - [ ] (Signal_groups)
+//! - [x] (Signal_encoding_type)
+//! - [x] (Signal_representation)
 //!
 //! (optional sections are in parentheses)
 //!
@@ -35,6 +35,8 @@
 //! LIN_language_version = "2.1" ;
 //! LIN_speed = 19.2 kbps ;
 //! Channel_name = "DB";
+//!
+//! /* PARSING IGNORES BLOCK COMMENTS */
 //!
 //! Nodes {
 //!     Master: Master, 5 ms, 0.1 ms ;
