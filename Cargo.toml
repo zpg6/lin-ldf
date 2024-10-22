@@ -1,0 +1,10 @@
+[package]
+name = "lin-ldf"
+version = "0.0.1"
+description = "Parser for LDF files that describe automotive LIN bus networks."
+edition = "2021"
+license = "MIT"
+authors = ["Zach Grimaldi <zpg6@pitt.edu>"]
+
+[dependencies]
+nom = "7.1.3"
