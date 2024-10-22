@@ -37,9 +37,9 @@ pub enum LdfSignalEncodingTypeValue {
     },
     PhysicalValue {
         /// Minimum value
-        min_value: u32,
+        min_value: i32,
         /// Maximum value
-        max_value: u32,
+        max_value: i32,
         /// Scaling factor
         scaling_factor: f32,
         /// Offset
@@ -122,11 +122,11 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
                     )
                 }
                 "physical_value" => {
-                    let (s, min_value) = take_while(|c: char| c.is_numeric())(s)?;
+                    let (s, min_value) = take_while(|c: char| c.is_numeric() || c == '-')(s)?;
                     let (s, _) = skip_whitespace(s)?;
                     let (s, _) = tag(",")(s)?;
                     let (s, _) = skip_whitespace(s)?;
-                    let (s, max_value) = take_while(|c: char| c.is_numeric())(s)?;
+                    let (s, max_value) = take_while(|c: char| c.is_numeric() || c == '-')(s)?;
                     let (s, _) = skip_whitespace(s)?;
                     let (s, _) = tag(",")(s)?;
                     let (s, _) = skip_whitespace(s)?;
