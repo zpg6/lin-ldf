@@ -132,7 +132,7 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
                     let (s, _) = skip_whitespace(s)?;
                     let (s, _) = tag(",")(s)?;
                     let (s, _) = skip_whitespace(s)?;
-                    let (s, scaling_factor) = take_while(|c: char| c.is_numeric() || c == '.')(s)?;
+                    let (s, scaling_factor) = take_while(|c: char| c.is_numeric() || c == '.' || c == '-')(s)?;
                     let (s, _) = skip_whitespace(s)?;
                     let (s, _) = tag(",")(s)?;
                     let (s, _) = skip_whitespace(s)?;
