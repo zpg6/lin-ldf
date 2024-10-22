@@ -6,28 +6,28 @@ This library provides a parser for LIN (Local Interconnect Network) LDF (LIN Des
 
 - [ ] LIN 1.3
 - [ ] LIN 2.0
-- ✅ LIN 2.1
+- [x] LIN 2.1
 - [ ] LIN 2.2
 
 ## Supported LDF sections (so far)
 
-- ✅ LIN_protocol_version
-- ✅ LIN_language_version
-- ✅ LIN_speed
+- [x] LIN_protocol_version
+- [x] LIN_language_version
+- [x] LIN_speed
 - [ ] (Channel_name)
-- ✅ Nodes
+- [x] Nodes
 - [ ] (Node_composition)
-- ✅ Signals
-- ✅ (Diagnostic_signals)
-- ✅ Frames
+- [x] Signals
+- [x] (Diagnostic_signals)
+- [x] Frames
 - [ ] (Sporadic_frame)
 - [ ] (Event_triggered_frame)
-- ✅ (Diagnostic_frames)
-- ✅ Node_attributes
-- ✅ Schedule_table
+- [x] (Diagnostic_frames)
+- [x] Node_attributes
+- [x] Schedule_table
 - [ ] (Signal_groups)
-- ✅ (Signal_encoding_type)
-- ✅ (Signal_representation)
+- [x] (Signal_encoding_type)
+- [x] (Signal_representation)
 
 (optional sections are in parentheses)
 
