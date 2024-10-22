@@ -1,4 +1,5 @@
 pub mod ldf_comment;
+pub mod ldf_diagnostic_frames;
 pub mod ldf_diagnostic_signals;
 pub mod ldf_frames;
 pub mod ldf_header;
@@ -9,18 +10,15 @@ pub mod ldf_signal_encoding_types;
 pub mod ldf_signal_representation;
 pub mod ldf_signals;
 
+use crate::ldf::ldf_diagnostic_frames::{parse_ldf_diagnostic_frames, LdfDiagnosticFrame};
 use crate::ldf::ldf_diagnostic_signals::{parse_ldf_diagnostic_signals, LdfDiagnosticSignal};
 use crate::ldf::ldf_frames::{parse_ldf_frames, LdfFrame};
 use crate::ldf::ldf_header::{parse_ldf_header, LdfHeader};
 use crate::ldf::ldf_node_attributes::{parse_ldf_node_attributes, LdfNodeAttributes};
 use crate::ldf::ldf_nodes::{parse_ldf_nodes, LdfNodes};
 use crate::ldf::ldf_schedule_tables::{parse_ldf_schedule_tables, LdfScheduleTable};
-use crate::ldf::ldf_signal_encoding_types::{
-    parse_ldf_signal_encoding_types, LdfSignalEncodingType,
-};
-use crate::ldf::ldf_signal_representation::{
-    parse_ldf_signal_representation, LdfSignalRepresentation,
-};
+use crate::ldf::ldf_signal_encoding_types::{parse_ldf_signal_encoding_types, LdfSignalEncodingType};
+use crate::ldf::ldf_signal_representation::{parse_ldf_signal_representation, LdfSignalRepresentation};
 use crate::ldf::ldf_signals::{parse_ldf_signals, LdfSignal};
 
 pub struct LinLdf {
@@ -29,6 +27,7 @@ pub struct LinLdf {
     pub signals: Vec<LdfSignal>,
     pub diagnostic_signals: Vec<LdfDiagnosticSignal>,
     pub frames: Vec<LdfFrame>,
+    pub diagnostic_frames: Vec<LdfDiagnosticFrame>,
     pub node_attributes: Vec<LdfNodeAttributes>,
     pub schedule_tables: Vec<LdfScheduleTable>,
     pub signal_encoding_types: Vec<LdfSignalEncodingType>,
@@ -60,18 +59,16 @@ impl LinLdf {
     pub fn parse(s: &str) -> Result<LinLdf, &'static str> {
         let (s, header) = parse_ldf_header(s).map_err(|_| "Failed to parse header")?;
         let (s, nodes) = parse_ldf_nodes(s).map_err(|_| "Failed to parse Nodes section")?;
-        let (s, signals) =
-            parse_ldf_signals(s).map_err(|_| "Failed to parse Signals section (required)")?;
+        let (s, signals) = parse_ldf_signals(s).map_err(|_| "Failed to parse Signals section (required)")?;
         let (s, diagnostic_signals) = parse_ldf_diagnostic_signals(s).unwrap_or((s, Vec::new()));
         let (s, frames) = parse_ldf_frames(s).map_err(|_| "Failed to parse Frames section")?;
+        let (s, diagnostic_frames) = parse_ldf_diagnostic_frames(s).unwrap_or((s, Vec::new()));
         let (s, node_attributes) =
             parse_ldf_node_attributes(s).map_err(|_| "Failed to parse Node_attributes section")?;
         let (s, schedule_tables) =
             parse_ldf_schedule_tables(s).map_err(|_| "Failed to parse Schedule_tables section")?;
-        let (s, signal_encoding_types) =
-            parse_ldf_signal_encoding_types(s).unwrap_or((s, Vec::new()));
-        let (_, signal_representations) =
-            parse_ldf_signal_representation(s).unwrap_or((s, Vec::new()));
+        let (s, signal_encoding_types) = parse_ldf_signal_encoding_types(s).unwrap_or((s, Vec::new()));
+        let (_, signal_representations) = parse_ldf_signal_representation(s).unwrap_or((s, Vec::new()));
 
         Ok(LinLdf {
             header,
@@ -79,6 +76,7 @@ impl LinLdf {
             signals,
             diagnostic_signals,
             frames,
+            diagnostic_frames,
             node_attributes,
             schedule_tables,
             signal_encoding_types,
@@ -132,6 +130,29 @@ mod tests {
                 Frame2: 1, Slave1, 8 {
                     Signal3, 0 ;
                     Signal4, 10 ;
+                }
+            }
+
+            Diagnostic_frames {
+                MasterReq: 0x3C {
+                    MasterReqB0, 0 ;
+                    MasterReqB1, 8 ;
+                    MasterReqB2, 16 ;
+                    MasterReqB3, 24 ;
+                    MasterReqB4, 32 ;
+                    MasterReqB5, 40 ;
+                    MasterReqB6, 48 ;
+                    MasterReqB7, 56 ;
+                }
+                SlaveResp: 0x3D {
+                    SlaveRespB0, 0 ;
+                    SlaveRespB1, 8 ;
+                    SlaveRespB2, 16 ;
+                    SlaveRespB3, 24 ;
+                    SlaveRespB4, 32 ;
+                    SlaveRespB5, 40 ;
+                    SlaveRespB6, 48 ;
+                    SlaveRespB7, 56 ;
                 }
             }
 
@@ -253,6 +274,23 @@ mod tests {
         assert_eq!(ldf.frames[1].signals[0].start_bit, 0);
         assert_eq!(ldf.frames[1].signals[1].signal_name, "Signal4");
         assert_eq!(ldf.frames[1].signals[1].start_bit, 10);
+
+        // Diagnostic frames
+        assert_eq!(ldf.diagnostic_frames.len(), 2);
+        assert_eq!(ldf.diagnostic_frames[0].frame_name, "MasterReq");
+        assert_eq!(ldf.diagnostic_frames[0].frame_id, 0x3C);
+        assert_eq!(ldf.diagnostic_frames[0].signals.len(), 8);
+        assert_eq!(ldf.diagnostic_frames[0].signals[0].signal_name, "MasterReqB0");
+        assert_eq!(ldf.diagnostic_frames[0].signals[0].start_bit, 0);
+        assert_eq!(ldf.diagnostic_frames[0].signals[7].signal_name, "MasterReqB7");
+        assert_eq!(ldf.diagnostic_frames[0].signals[7].start_bit, 56);
+        assert_eq!(ldf.diagnostic_frames[1].frame_name, "SlaveResp");
+        assert_eq!(ldf.diagnostic_frames[1].frame_id, 0x3D);
+        assert_eq!(ldf.diagnostic_frames[1].signals.len(), 8);
+        assert_eq!(ldf.diagnostic_frames[1].signals[0].signal_name, "SlaveRespB0");
+        assert_eq!(ldf.diagnostic_frames[1].signals[0].start_bit, 0);
+        assert_eq!(ldf.diagnostic_frames[1].signals[7].signal_name, "SlaveRespB7");
+        assert_eq!(ldf.diagnostic_frames[1].signals[7].start_bit, 56);
 
         // Node attributes
         assert_eq!(ldf.node_attributes.len(), 2);
