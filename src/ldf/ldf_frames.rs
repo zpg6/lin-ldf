@@ -8,12 +8,12 @@ use nom::{
 /// ```text
 /// Frames {
 ///    Frame1: 0, Master, 8 {
-///       Signal1: 0 ;
-///       Signal2: 1 ;
+///       Signal1, 0 ;
+///       Signal2, 1 ;
 ///    }
 ///    Frame2: 1, Slave1, 8 {
-///       Signal3: 0 ;
-///       Signal4: 1 ;
+///       Signal3, 0 ;
+///       Signal4, 1 ;
 ///    }
 /// }
 /// ```
@@ -38,12 +38,12 @@ pub struct LdfFrame {
 /// ```text
 /// Frames {
 ///    Frame1: 0, Master, 8 {
-///       Signal1: 0 ;
-///       Signal2: 1 ;
+///       Signal1, 0 ;
+///       Signal2, 1 ;
 ///    }
 ///    Frame2: 1, Slave1, 8 {
-///       Signal3: 0 ;
-///       Signal4: 1 ;
+///       Signal3, 0 ;
+///       Signal4, 1 ;
 ///    }
 /// }
 /// ```
@@ -58,12 +58,12 @@ pub struct LdfFrameSignal {
 /*
 Frames {
    Frame1: 0, Master, 8 {
-      Signal1: 0 ;
-      Signal2: 1 ;
+      Signal1, 0 ;
+      Signal2, 1 ;
    }
    Frame2: 1, Slave1, 8 {
-      Signal3: 0 ;
-      Signal4: 1 ;
+      Signal3, 0 ;
+      Signal4, 1 ;
    }
 }
 */
@@ -135,7 +135,7 @@ fn parse_ldf_frame_signal(s: &str) -> IResult<&str, LdfFrameSignal> {
     let (s, _) = skip_whitespace(s)?;
     let (s, signal_name) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
     let (s, _) = skip_whitespace(s)?;
-    let (s, _) = tag(":")(s)?;
+    let (s, _) = tag(",")(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, start_bit) = take_while(|c: char| c.is_numeric())(s)?;
     let (s, _) = skip_whitespace(s)?;
@@ -159,12 +159,12 @@ mod tests {
         let input = r#"
         Frames {
             Frame1: 0, Master, 8 {
-                Signal1: 0 ;
-                Signal2: 10 ;
+                Signal1, 0 ;
+                Signal2, 10 ;
             }
             Frame2: 1, Slave1, 8 {
-                Signal3: 0 ;
-                Signal4: 10 ;
+                Signal3, 0 ;
+                Signal4, 10 ;
             }
         }
         "#;

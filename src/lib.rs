@@ -65,12 +65,12 @@
 //!
 //! Frames {
 //!   Frame1: 0, Master, 8 {
-//!     Signal1: 0 ;
-//!     Signal2: 10 ;
+//!     Signal1, 0 ;
+//!     Signal2, 10 ;
 //!   }
 //!   Frame2: 1, Slave1, 8 {
-//!       Signal3: 0 ;
-//!       Signal4: 10 ;
+//!       Signal3, 0 ;
+//!       Signal4, 10 ;
 //!   }
 //! }
 //!
