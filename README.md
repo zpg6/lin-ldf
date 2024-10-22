@@ -34,7 +34,8 @@ LIN_description_file ;
 LIN_protocol_version = "2.1" ;
 LIN_language_version = "2.1" ;
 LIN_speed = 19.2 kbps ;
-Channel_name = "DB" ;
+
+/* PARSING IGNORES BLOCK COMMENTS */
 
 Nodes {
     Master: Master, 5 ms, 0.1 ms ;
@@ -49,9 +50,66 @@ Signals {
     Signal5: 2, 0, Slave1, Master ;
     Signal6: 1, 0, Slave1, Master ;
 }
-"#; // ... rest of the LDF file
+
+Frames {
+    Frame1: 0, Master, 8 {
+        Signal1, 0 ;
+        Signal2, 10 ;
+    }
+    Frame2: 0x16, Slave1, 8 {
+        Signal3, 0 ;
+        Signal4, 10 ;
+    }
+}
+
+Node_attributes {
+   Slave1 {
+       LIN_protocol = "2.1" ;
+       configured_NAD = 0xB ;
+       initial_NAD = 0xB ;
+       product_id = 0x123, 0x4567, 8 ;
+       response_error = Signal1 ;
+       P2_min = 100 ms ;
+       ST_min = 0 ms ;
+       N_As_timeout = 1000 ms ;
+       N_Cr_timeout = 1000 ms ;
+       configurable_frames {
+           Frame1 ;
+           Frame2 ;
+       }
+   }
+   Slave2 {
+       LIN_protocol = "2.1" ;
+       configured_NAD = 0xC ;
+       initial_NAD = 0xC ;
+       product_id = 0x124, 0x4568, 0x66 ;
+       response_error = Signal2 ;
+       P2_min = 100 ms ;
+       ST_min = 0 ms ;
+       N_As_timeout = 1000 ms ;
+       N_Cr_timeout = 1000 ms ;
+       configurable_frames {
+           Frame1 ;
+           Frame2 ;
+       }
+   }
+}
+
+Schedule_tables {
+    AllFrames {
+        Frame1 delay 10 ms ;
+        Frame2 delay 10 ms ;
+    }
+}
+"#;
 
 let parsed_ldf = parse_ldf(ldf).expect("Failed to parse LDF file");
-let lin_protocol_version = parsed_ldf.header.lin_protocol_version; // "2.1"
-let jitter = parsed_ldf.nodes.master.jitter; // "0.1 ms"
+let total_signal_count = parsed_ldf.signals.len(); // 6
+
+for frame in parsed_ldf.frames {
+    println!("Frame: {}", frame.frame_name);
+    for signal in frame.signals {
+        println!("\tSignal: {}", signal.signal_name);
+    }
+}
 ```
