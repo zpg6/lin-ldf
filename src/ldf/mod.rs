@@ -345,9 +345,9 @@ mod tests {
         assert_eq!(ldf.schedule_tables[0].schedule_table_name, "AllFrames");
         assert_eq!(ldf.schedule_tables[0].frame_delays.len(), 2);
         assert_eq!(ldf.schedule_tables[0].frame_delays[0].frame_name, "Frame1");
-        assert_eq!(ldf.schedule_tables[0].frame_delays[0].frame_time, 10);
+        assert_eq!(ldf.schedule_tables[0].frame_delays[0].frame_time, 10.0);
         assert_eq!(ldf.schedule_tables[0].frame_delays[1].frame_name, "Frame2");
-        assert_eq!(ldf.schedule_tables[0].frame_delays[1].frame_time, 10);
+        assert_eq!(ldf.schedule_tables[0].frame_delays[1].frame_time, 10.0);
 
         // Signal encoding types
         assert_eq!(ldf.signal_encoding_types.len(), 3);

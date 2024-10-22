@@ -31,7 +31,7 @@ pub struct LdfFrameDelay {
     pub frame_name: String,
 
     /// Frame delay in milliseconds
-    pub frame_time: u32,
+    pub frame_time: f32,
 }
 
 /*
@@ -79,7 +79,7 @@ pub fn parse_ldf_schedule_tables(s: &str) -> IResult<&str, Vec<LdfScheduleTable>
             let (s, _) = tag(" ")(s)?;
             let (s, _) = tag("delay")(s)?;
             let (s, _) = skip_whitespace(s)?;
-            let (s, frame_time) = take_while(|c: char| c.is_digit(10))(s)?;
+            let (s, frame_time) = take_while(|c: char| c.is_numeric() || c == '.')(s)?;
             let (s, _) = skip_whitespace(s)?;
             let (s, _) = tag("ms")(s)?;
             let (s, _) = skip_whitespace(s)?;
@@ -135,10 +135,10 @@ mod tests {
 
         let frame_delay = &schedule_table.frame_delays[0];
         assert_eq!(frame_delay.frame_name, "Frame1");
-        assert_eq!(frame_delay.frame_time, 10);
+        assert_eq!(frame_delay.frame_time, 10.0);
 
         let frame_delay = &schedule_table.frame_delays[1];
         assert_eq!(frame_delay.frame_name, "Frame2");
-        assert_eq!(frame_delay.frame_time, 10);
+        assert_eq!(frame_delay.frame_time, 10.0);
     }
 }

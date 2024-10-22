@@ -1,6 +1,6 @@
 [package]
 name = "lin-ldf"
-version = "0.0.12"
+version = "0.0.13"
 description = "Parser for LDF files that describe automotive LIN bus networks."
 edition = "2021"
 license = "MIT"
