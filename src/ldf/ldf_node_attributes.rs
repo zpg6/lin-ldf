@@ -1,7 +1,7 @@
 use crate::ldf::ldf_comment::skip_whitespace;
 use nom::{
     bytes::complete::{tag, take_while},
-    IResult,
+    AsChar, IResult,
 };
 
 /// `Node_attributes` section of a LIN Description File (LDF)
@@ -117,7 +117,7 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag("=")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, configured_nad) = take_while(|c: char| c.is_alphanumeric() || c == 'x')(s)?;
+        let (s, configured_nad) = take_while(|c: char| c.is_hex_digit() || c == 'x')(s)?;
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(";")(s)?;
 
@@ -126,7 +126,7 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag("=")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, initial_nad) = take_while(|c: char| c.is_alphanumeric() || c == 'x')(s)?;
+        let (s, initial_nad) = take_while(|c: char| c.is_hex_digit() || c == 'x')(s)?;
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(";")(s)?;
 
@@ -135,15 +135,15 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag("=")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, supplier_id) = take_while(|c: char| c.is_alphanumeric() || c == 'x')(s)?;
+        let (s, supplier_id) = take_while(|c: char| c.is_hex_digit() || c == 'x')(s)?;
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(",")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, function_id) = take_while(|c: char| c.is_alphanumeric() || c == 'x')(s)?;
+        let (s, function_id) = take_while(|c: char| c.is_hex_digit() || c == 'x')(s)?;
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(",")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, variant) = take_while(|c: char| c.is_alphanumeric() || c == 'x')(s)?;
+        let (s, variant) = take_while(|c: char| c.is_hex_digit() || c == 'x')(s)?;
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(";")(s)?;
 

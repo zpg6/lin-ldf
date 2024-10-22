@@ -1,7 +1,7 @@
 use crate::ldf::ldf_comment::skip_whitespace;
 use nom::{
     bytes::complete::{tag, take_while},
-    IResult,
+    AsChar, IResult,
 };
 
 /// `Frames` section of a LIN Description File (LDF)
@@ -95,7 +95,7 @@ fn parse_ldf_frame(s: &str) -> IResult<&str, LdfFrame> {
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag(":")(s)?;
     let (s, _) = skip_whitespace(s)?;
-    let (s, frame_id) = take_while(|c: char| c.is_numeric() || c == 'x')(s)?;
+    let (s, frame_id) = take_while(|c: char| c.is_hex_digit() || c == 'x')(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag(",")(s)?;
     let (s, _) = skip_whitespace(s)?;
