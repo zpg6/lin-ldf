@@ -43,7 +43,7 @@ pub enum LdfSignalEncodingTypeValue {
         /// Scaling factor
         scaling_factor: f32,
         /// Offset
-        offset: i32,
+        offset: f32,
         /// Unit
         unit: String,
     },
@@ -242,7 +242,7 @@ mod tests {
                 assert_eq!(*min_value, 0);
                 assert_eq!(*max_value, 1023);
                 assert_eq!(*scaling_factor, 0.2);
-                assert_eq!(*offset, -40);
+                assert_eq!(*offset, -40.0);
                 assert_eq!(unit, "degC");
             }
             _ => panic!("Expected PhysicalValue"),
@@ -262,7 +262,7 @@ mod tests {
                 assert_eq!(*min_value, 0);
                 assert_eq!(*max_value, 1023);
                 assert_eq!(*scaling_factor, 10.0);
-                assert_eq!(*offset, 0);
+                assert_eq!(*offset, 0.0);
                 assert_eq!(unit, "rpm");
             }
             _ => panic!("Expected PhysicalValue"),
