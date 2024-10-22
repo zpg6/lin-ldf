@@ -55,10 +55,7 @@ pub fn parse_ldf_signal_representation(s: &str) -> IResult<&str, Vec<LdfSignalRe
         let (s, _) = tag(";")(s)?;
         let (s, _) = skip_whitespace(s)?;
 
-        let signal_names = signal_names
-            .split(',')
-            .map(|s| s.trim().to_string())
-            .collect();
+        let signal_names = signal_names.split(',').map(|s| s.trim().to_string()).collect();
 
         signal_representations.push(LdfSignalRepresentation {
             encoding_type_name: encoding_type_name.trim().to_string(),

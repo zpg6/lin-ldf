@@ -25,6 +25,7 @@ pub struct LdfHeader {
     /// This sets the nominal bit rate for the cluster. It shall be in the range of 1 to 20 kbit/second.
     pub lin_speed: String,
 }
+
 /*
 LIN_description_file;
 LIN_protocol_version = "2.1" ;
@@ -33,7 +34,6 @@ LIN_speed = 19.2 kbps ;
 */
 
 pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
-
     // Skip anything before "LIN_description_file"
     let (s, _) = take_until("LIN_description_file")(s)?;
 
