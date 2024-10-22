@@ -5,6 +5,10 @@ description = "Parser for LDF files that describe automotive LIN bus networks."
 edition = "2021"
 license = "MIT"
 authors = ["Zach Grimaldi <zpg6@pitt.edu>"]
+documentation = "https://docs.rs/lin-ldf"
+repository = "https://github.com/zpg6/lin-ldf"
+categories = ["development-tools"]
+keywords = ["ldf", "parser", "lin", "linbus", "automotive"]
 
 [dependencies]
 nom = "7.1.3"
