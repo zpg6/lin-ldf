@@ -48,6 +48,7 @@ LIN_language_version = "2.1" ;
 LIN_speed = 19.2 kbps ;
 
 /* PARSING IGNORES BLOCK COMMENTS */
+// AND LINE COMMENTS
 
 Nodes {
     Master: Master, 5 ms, 0.1 ms ;
@@ -116,7 +117,9 @@ Schedule_tables {
 "#;
 
 let parsed_ldf = parse_ldf(ldf).expect("Failed to parse LDF file");
-let total_signal_count = parsed_ldf.signals.len(); // 6
+
+println!("LIN Version: {}", parsed_ldf.lin_protocol_version); // 2.1
+println!("LIN Speed: {}", parsed_ldf.lin_speed); // 19200
 
 for frame in parsed_ldf.frames {
     println!("Frame: `{}` is {} bytes long", frame.frame_name, frame.frame_size);

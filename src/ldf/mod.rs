@@ -236,7 +236,7 @@ mod tests {
         // Header
         assert_eq!(ldf.header.lin_protocol_version, "2.1");
         assert_eq!(ldf.header.lin_language_version, "2.1");
-        assert_eq!(ldf.header.lin_speed, "19.2");
+        assert_eq!(ldf.header.lin_speed, 19200);
 
         // Nodes
         assert_eq!(ldf.nodes.master.name, "Master");

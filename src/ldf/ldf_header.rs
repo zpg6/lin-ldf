@@ -22,9 +22,9 @@ pub struct LdfHeader {
     /// Shall be in the range of "0.01" to "99.99".
     pub lin_language_version: String,
 
-    /// LIN speed in kbps (e.g. "19.2"). Often called baud rate or bit rate.
+    /// LIN speed in bits per second (e.g. 19.2 kbps = 19200).
     /// This sets the nominal bit rate for the cluster. It shall be in the range of 1 to 20 kbit/second.
-    pub lin_speed: String,
+    pub lin_speed: u16,
 
     /// Channel_name is optional and was added in LIN 2.2 version.
     pub channel_name: Option<String>,
@@ -106,7 +106,7 @@ pub fn parse_ldf_header(s: &str) -> IResult<&str, LdfHeader> {
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag(";")(s)?;
 
-    let lin_speed = lin_speed.to_string();
+    let lin_speed = (lin_speed.parse::<f32>().unwrap() * 1000.0) as u16;
 
     let (s, channel_name) = parse_channel_name(s).unwrap_or((s, None));
 
@@ -158,7 +158,7 @@ mod tests {
         let (_, header) = parse_ldf_header(s).unwrap();
         assert_eq!(header.lin_protocol_version, "2.1");
         assert_eq!(header.lin_language_version, "2.1");
-        assert_eq!(header.lin_speed, "19.2");
+        assert_eq!(header.lin_speed, 19200);
         assert_eq!(header.channel_name, Some("DB".to_string()));
     }
 
@@ -181,7 +181,7 @@ mod tests {
         let (_, header) = parse_ldf_header(s).unwrap();
         assert_eq!(header.lin_protocol_version, "2.1");
         assert_eq!(header.lin_language_version, "2.1");
-        assert_eq!(header.lin_speed, "19.2");
+        assert_eq!(header.lin_speed, 19200);
         assert_eq!(header.channel_name, None);
     }
 }
