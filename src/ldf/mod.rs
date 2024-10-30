@@ -120,7 +120,7 @@ mod tests {
             // MY LINE COMMENT
 
             Signals {
-                Signal1: 10, 0, Master, Slave1 ;
+                Signal1: 10, 0, Master, Slave1 , Slave2 ;
                 Signal2: 10, 0, Master, Slave1 ;
                 Signal3: 10, 0, Master, Slave1 ;
                 Signal4: 10, 0, Slave1, Master ;
@@ -253,12 +253,12 @@ mod tests {
         assert_eq!(ldf.signals[0].signal_size, 10);
         assert_eq!(ldf.signals[0].init_value, LdfSignalInitValue::Scalar(0));
         assert_eq!(ldf.signals[0].published_by, "Master");
-        assert_eq!(ldf.signals[0].subscribed_by, "Slave1");
+        assert_eq!(ldf.signals[0].subscribed_by[0], "Slave1");
         assert_eq!(ldf.signals[5].name, "Signal6");
         assert_eq!(ldf.signals[5].signal_size, 1);
         assert_eq!(ldf.signals[5].init_value, LdfSignalInitValue::Scalar(0));
         assert_eq!(ldf.signals[5].published_by, "Slave1");
-        assert_eq!(ldf.signals[5].subscribed_by, "Master");
+        assert_eq!(ldf.signals[5].subscribed_by[0], "Master");
 
         // Diagnostic signals
         assert_eq!(ldf.diagnostic_signals.len(), 6);

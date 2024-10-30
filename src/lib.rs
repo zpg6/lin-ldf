@@ -43,7 +43,7 @@
 //! }
 //!
 //! Signals {
-//!     Signal1: 10, 0, Master, Slave1 ;
+//!     Signal1: 10, 0, Master, Slave1 , Slave2 ;
 //!     Signal2: 10, 0, Master, Slave1 ;
 //!     Signal3: 10, 0, Slave1, Master ;
 //!     Signal4: 10, 0, Slave1, Master ;

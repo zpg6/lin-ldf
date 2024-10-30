@@ -1,6 +1,6 @@
 use crate::ldf::ldf_comment::skip_whitespace;
 use nom::{
-    bytes::complete::{tag, take_while},
+    bytes::complete::{tag, take_until, take_while},
     IResult,
 };
 
@@ -61,9 +61,9 @@ pub struct LdfSignal {
     /// The published_by identifier shall exist in the node identifier set.
     pub published_by: String,
 
-    /// The subscribed_by specifies the node that is subscribing to the signal.
-    /// The subscribed_by identifier shall exist in the node identifier set.
-    pub subscribed_by: String,
+    /// The subscribed_by specifies the node(s) that is subscribing to the signal.
+    /// The subscribed_by identifiers shall exist in the node identifier set.
+    pub subscribed_by: Vec<String>,
 }
 
 /*
@@ -117,8 +117,8 @@ pub fn parse_ldf_signals(s: &str) -> IResult<&str, Vec<LdfSignal>> {
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag(",")(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, subscribed_by) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
-        let (s, _) = skip_whitespace(s)?;
+        let (s, subscribed_by_str) = take_until(";")(s)?;
+        let subscribed_by: Vec<String> = subscribed_by_str.split(',').map(|s| s.trim().to_string()).collect();
         let (s, _) = tag(";")(s)?;
         let (s, _) = skip_whitespace(s)?;
 
@@ -129,7 +129,7 @@ pub fn parse_ldf_signals(s: &str) -> IResult<&str, Vec<LdfSignal>> {
             signal_size: signal_size.parse().unwrap(),
             init_value: LdfSignalInitValue::Scalar(init_value.parse().unwrap()),
             published_by: published_by.to_string(),
-            subscribed_by: subscribed_by.to_string(),
+            subscribed_by,
         };
 
         signals.push(signal);
@@ -151,7 +151,7 @@ mod tests {
     fn test_parse_ldf_signals() {
         let input = r#"
             Signals {
-                Signal1: 10, 0, Master, Slave1 ;
+                Signal1: 10, 0, Master, Slave1 , Slave2 ;
                 Signal2: 10, 0, Master, Slave1 ;
                 Signal3: 10, 0, Slave1, Master ;
                 Signal4: 10, 0, Slave1, Master ;
@@ -165,7 +165,7 @@ mod tests {
         assert_eq!(signals[0].name, "Signal1");
         assert_eq!(signals[0].signal_size, 10);
         assert_eq!(signals[0].published_by, "Master");
-        assert_eq!(signals[0].subscribed_by, "Slave1");
+        assert_eq!(signals[0].subscribed_by, vec!["Slave1", "Slave2"]);
         assert_eq!(signals[1].name, "Signal2");
     }
 }
