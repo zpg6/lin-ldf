@@ -1,6 +1,16 @@
-# LIN LDF parser using Rust's `nom` parser combinator library.
+# lin-ldf
 
-This library provides a parser for LIN (Local Interconnect Network) LDF (LIN Description File) files.
+LIN Description File (.ldf) parser using Rust's `nom` parser combinator library. LIN is an automotive network protocol used for communication between ECUs in a vehicle. The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
+
+<br>
+<a href="https://crates.io/crates/lin-ldf">
+    <img src="https://img.shields.io/crates/v/lin-ldf.svg" alt="Crates.io">
+</a>
+<a href="https://docs.rs/lin-ldf">
+    <img src="https://docs.rs/lin-ldf/badge.svg" alt="Documentation">
+</a>
+<img src="https://img.shields.io/badge/license-MIT-blue.svg">
+<br>
 
 ## Supported LDF sections (so far)
 
