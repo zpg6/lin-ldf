@@ -9,7 +9,9 @@
 //! <a href="https://docs.rs/lin-ldf">
 //! <img src="https://docs.rs/lin-ldf/badge.svg" alt="Documentation">
 //! </a>
+//! <a href="">
 //! <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+//! </a>
 //! <br>
 //!
 //! ## Supported LDF sections (so far)
@@ -117,13 +119,12 @@
 //! let total_signal_count = parsed_ldf.signals.len(); // 6
 //!
 //! for frame in parsed_ldf.frames {
-//!     println!("Frame: {}", frame.frame_name);
+//!     println!("Frame: {} is {} bytes long", frame.frame_name, frame.frame_size);
 //!     for signal in frame.signals {
-//!         println!("\tSignal: {}", signal.signal_name);
+//!         println!("\tSignal: `{}` at bit position {}", signal.signal_name, signal.start_bit);
 //!     }
 //! }
 //! ```
-
 mod ldf;
 
 pub use ldf::ldf_signal_encoding_types::LdfSignalEncodingTypeValue;
