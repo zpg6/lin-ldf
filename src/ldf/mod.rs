@@ -65,11 +65,13 @@ impl LinLdf {
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, signals) = parse_ldf_signals(s).map_err(|_| "Failed to parse Signals section (required)")?;
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, diagnostic_signals) = parse_ldf_diagnostic_signals(s).unwrap_or((s, Vec::new()));
+        let (s, diagnostic_signals) =
+            parse_ldf_diagnostic_signals(s).map_err(|_| "Failed to parse Diagnostic_signals section")?;
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, frames) = parse_ldf_frames(s).map_err(|_| "Failed to parse Frames section")?;
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, diagnostic_frames) = parse_ldf_diagnostic_frames(s).unwrap_or((s, Vec::new()));
+        let (s, diagnostic_frames) =
+            parse_ldf_diagnostic_frames(s).map_err(|_| "Failed to parse Diagnostic_frames section")?;
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
         let (s, node_attributes) =
             parse_ldf_node_attributes(s).map_err(|_| "Failed to parse Node_attributes section")?;
@@ -77,9 +79,11 @@ impl LinLdf {
         let (s, schedule_tables) =
             parse_ldf_schedule_tables(s).map_err(|_| "Failed to parse Schedule_tables section")?;
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, signal_encoding_types) = parse_ldf_signal_encoding_types(s).unwrap_or((s, Vec::new()));
+        let (s, signal_encoding_types) =
+            parse_ldf_signal_encoding_types(s).map_err(|_| "Failed to parse Signal_encoding_types section")?;
         let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (_, signal_representations) = parse_ldf_signal_representation(s).unwrap_or((s, Vec::new()));
+        let (_, signal_representations) =
+            parse_ldf_signal_representation(s).map_err(|_| "Failed to parse Signal_representation section")?;
 
         Ok(LinLdf {
             header,

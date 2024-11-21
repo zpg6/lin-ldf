@@ -69,6 +69,12 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
     // - May be any number of spaces before and after the "Signal_encoding_types" tag
     // - May be any number of spaces before and after the opening curly brace
     let (s, _) = skip_whitespace(s)?;
+
+    // Assume that if the section label is not present, then the section is not present.
+    if !s.starts_with("Signal_encoding_types") {
+        return Ok((s, Vec::new()));
+    }
+
     let (s, _) = tag("Signal_encoding_types")(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;

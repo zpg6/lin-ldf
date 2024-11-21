@@ -46,6 +46,12 @@ pub fn parse_ldf_diagnostic_signals(s: &str) -> IResult<&str, Vec<LdfDiagnosticS
     // - May be any number of spaces before and after the "Diagnostic_signals" tag
     // - May be any number of spaces before and after the opening curly brace
     let (s, _) = skip_whitespace(s)?;
+
+    // Assume that if the section label is not present, then the section is not present.
+    if !s.starts_with("Diagnostic_signals") {
+        return Ok((s, Vec::new()));
+    }
+
     let (s, _) = tag("Diagnostic_signals")(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;

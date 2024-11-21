@@ -32,6 +32,12 @@ pub fn parse_ldf_signal_representation(s: &str) -> IResult<&str, Vec<LdfSignalRe
     // - May be any number of spaces before and after the "Signal_representation" tag
     // - May be any number of spaces before and after the opening curly brace
     let (s, _) = skip_whitespace(s)?;
+
+    // Assume that if the section label is not present, then the section is not present
+    if !s.starts_with("Signal_representation") {
+        return Ok((s, Vec::new()));
+    }
+
     let (s, _) = tag("Signal_representation")(s)?;
     let (s, _) = skip_whitespace(s)?;
     let (s, _) = tag("{")(s)?;
