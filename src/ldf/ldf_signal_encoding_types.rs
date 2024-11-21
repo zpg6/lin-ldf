@@ -154,15 +154,13 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
 
                     // Scaling factor may be in scientific notation (ex: 1E-05)
                     let scaling_factor = {
-                        if scaling_factor.contains("e-") || scaling_factor.contains("E-") {
-                            let scaling_factor = scaling_factor.replace("e", "").replace("E", "");
-                            let leading = scaling_factor.split("E-").collect::<Vec<&str>>()[0]
-                                .parse::<f32>()
-                                .unwrap();
-                            let exponent = scaling_factor.split("E-").collect::<Vec<&str>>()[1]
-                                .parse::<i32>()
-                                .unwrap();
-                            leading * 10.0_f32.powi(-exponent)
+                        if scaling_factor.contains('e') || scaling_factor.contains('E') {
+                            let scaling_factor = scaling_factor.replace("e", "E").replace(" ", "");
+                            let base = scaling_factor.split("E").collect::<Vec<&str>>()[0];
+                            let exponent = scaling_factor.split("E").collect::<Vec<&str>>()[1];
+                            let base_f32 = base.parse::<f32>().unwrap();
+                            let exp_f32 = exponent.parse::<f32>().unwrap();
+                            base_f32 * 10_f32.powf(exp_f32)
                         } else {
                             scaling_factor.parse::<f32>().unwrap()
                         }
@@ -220,10 +218,16 @@ mod tests {
                 ENC_RPM {
                     physical_value, 0, 1023, 10, 0, "rpm" ;
                 }
+                ENC_SN {
+                    physical_value, 0, 1023, 1E-05, 0, "unit" ;
+                }
+                ENC_SN2 {
+                    physical_value, 0, 1023, 1.5E-05, 0, "unit" ;
+                }
             }
         "#;
         let (_, signal_encoding_types) = parse_ldf_signal_encoding_types(input).unwrap();
-        assert_eq!(signal_encoding_types.len(), 3);
+        assert_eq!(signal_encoding_types.len(), 5);
 
         let enc_bool = &signal_encoding_types[0];
         assert_eq!(enc_bool.encoding_type_name, "ENC_BOOL");
@@ -285,6 +289,46 @@ mod tests {
                 assert_eq!(*scaling_factor, 10.0);
                 assert_eq!(*offset, 0.0);
                 assert_eq!(unit, "rpm");
+            }
+            _ => panic!("Expected PhysicalValue"),
+        }
+
+        let enc_sn = &signal_encoding_types[3];
+        assert_eq!(enc_sn.encoding_type_name, "ENC_SN");
+        assert_eq!(enc_sn.encoding_type_values.len(), 1);
+        match &enc_sn.encoding_type_values[0] {
+            LdfSignalEncodingTypeValue::PhysicalValue {
+                min_value,
+                max_value,
+                scaling_factor,
+                offset,
+                unit,
+            } => {
+                assert_eq!(*min_value, 0);
+                assert_eq!(*max_value, 1023);
+                assert_eq!(*scaling_factor, 1E-05);
+                assert_eq!(*offset, 0.0);
+                assert_eq!(unit, "unit");
+            }
+            _ => panic!("Expected PhysicalValue"),
+        }
+
+        let enc_sn2 = &signal_encoding_types[4];
+        assert_eq!(enc_sn2.encoding_type_name, "ENC_SN2");
+        assert_eq!(enc_sn2.encoding_type_values.len(), 1);
+        match &enc_sn2.encoding_type_values[0] {
+            LdfSignalEncodingTypeValue::PhysicalValue {
+                min_value,
+                max_value,
+                scaling_factor,
+                offset,
+                unit,
+            } => {
+                assert_eq!(*min_value, 0);
+                assert_eq!(*max_value, 1023);
+                assert_eq!(*scaling_factor, 1.5E-05);
+                assert_eq!(*offset, 0.0);
+                assert_eq!(unit, "unit");
             }
             _ => panic!("Expected PhysicalValue"),
         }
