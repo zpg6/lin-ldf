@@ -136,7 +136,8 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
                     let (s, _) = skip_whitespace(s)?;
                     let (s, _) = tag(",")(s)?;
                     let (s, _) = skip_whitespace(s)?;
-                    let (s, scaling_factor) = take_while(|c: char| c.is_numeric() || c == 'e' || c == 'E' || c == '.' || c == '-')(s)?;
+                    let (s, scaling_factor) =
+                        take_while(|c: char| c.is_numeric() || c == 'e' || c == 'E' || c == '.' || c == '-')(s)?;
                     let (s, _) = skip_whitespace(s)?;
                     let (s, _) = tag(",")(s)?;
                     let (s, _) = skip_whitespace(s)?;
@@ -154,8 +155,13 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
                     // Scaling factor may be in scientific notation (ex: 1E-05)
                     let scaling_factor = {
                         if scaling_factor.contains("e-") || scaling_factor.contains("E-") {
-                            let leading = scaling_factor.split("e-").collect::<Vec<&str>>()[0].parse::<f32>().unwrap();
-                            let exponent = scaling_factor.split("e-").collect::<Vec<&str>>()[1].parse::<i32>().unwrap();
+                            let scaling_factor = scaling_factor.replace("e", "").replace("E", "");
+                            let leading = scaling_factor.split("E-").collect::<Vec<&str>>()[0]
+                                .parse::<f32>()
+                                .unwrap();
+                            let exponent = scaling_factor.split("E-").collect::<Vec<&str>>()[1]
+                                .parse::<i32>()
+                                .unwrap();
                             leading * 10.0_f32.powi(-exponent)
                         } else {
                             scaling_factor.parse::<f32>().unwrap()
