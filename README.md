@@ -14,6 +14,19 @@ LIN Description File (.ldf) parser using Rust's `nom` parser combinator library.
 </a>
 <br>
 
+This parser attempts to be a simple reflection of the well-documented instructions from the LIN specification: https://www.lin-cia.org/fileadmin/microsites/lin-cia.org/resources/documents/LIN_2.2A.pdf
+
+There are some existing parsers that have been around for years if you need something more robust:
+
+- https://github.com/c4deszes/ldfparser (Python)
+- https://github.com/uCAN-LIN/LinUSBConverter/tree/master/python_lib (Python)
+- https://github.com/TrippW/LDF-Parser (Python)
+
+...but I wanted to try my hand at writing a parser in Rust just for fun.
+
+> [!TIP]
+> It would be difficult to plan for all edge cases in vendor-specific implementations, so this just tries to follow the specification. CONTRIBUTIONS ARE WELCOMED! You can always open an issue or a PR if you find something that doesn't work as expected - but be sure to anonymize the data if it's proprietary (or just don't share it).
+
 ## Supported LDF sections (so far)
 
 - [x] LIN_protocol_version
