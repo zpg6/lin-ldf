@@ -1,6 +1,9 @@
 # lin-ldf
 
-LIN Description File (.ldf) parser using Rust's `nom` parser combinator library. LIN is an automotive network protocol used for communication between ECUs in a vehicle. The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
+LIN Description File (.ldf) parser using Rust's `nom` parser combinator library. LIN is an automotive serial protocol used for communication between ECUs in a vehicle. (Opinion) It's very resilient, behaves simply, and easy to work with. The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
+
+> [!WARNING]
+> This crate is still in development and may not be suitable for production use.
 
 <br>
 <a href="https://crates.io/crates/lin-ldf">
@@ -12,7 +15,7 @@ LIN Description File (.ldf) parser using Rust's `nom` parser combinator library.
 <a href="">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg">
 </a>
-<br>
+<br><br>
 
 This parser attempts to be a simple reflection of the well-documented instructions from the LIN specification: https://www.lin-cia.org/fileadmin/microsites/lin-cia.org/resources/documents/LIN_2.2A.pdf
 
@@ -23,9 +26,6 @@ There are some existing parsers that have been around for years if you need some
 - https://github.com/TrippW/LDF-Parser (Python)
 
 ...but I wanted to try my hand at writing a parser in Rust just for fun.
-
-> [!TIP]
-> It would be difficult to plan for all edge cases in vendor-specific implementations, so this just tries to follow the specification. CONTRIBUTIONS ARE WELCOMED! You can always open an issue or a PR if you find something that doesn't work as expected - but be sure to anonymize the data if it's proprietary (or just don't share it).
 
 ## Supported LDF sections (so far)
 
@@ -49,7 +49,12 @@ There are some existing parsers that have been around for years if you need some
 
 (optional sections are in parentheses)
 
+> [!TIP]
+> It would be difficult to plan for all edge cases in vendor-specific implementations, so this just tries to follow the specification. CONTRIBUTIONS ARE WELCOMED! You can always open an issue or a PR if you find something that doesn't work as expected - but be sure to anonymize the data if it's proprietary (or just don't share it).
+
 # Example
+
+Here's how you can parse an LDF file and access the parsed data for your use case:
 
 ```rust
 use lin_ldf::parse_ldf;
