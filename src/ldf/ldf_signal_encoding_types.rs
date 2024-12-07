@@ -11,11 +11,11 @@ use nom::{
 ///     logical_value, 0, "FALSE" ;
 ///     logical_value, 1, "TRUE" ;
 ///   }
-///   ENC_TEMP {
-///     physical_value, 0, 1023, 0.2, -40, "degC" ;
+///   ENC_ENGINE_INTERNAL_TEMP {
+///     physical_value, 0, 1023, 0.1, 100, "kelvin" ;
 ///   }
-///   ENC_RPM {
-///     physical_value, 0, 1023, 10, 0, "rpm" ;
+///   ENC_ENGINE_RPM {
+///     physical_value, 0, 1023, 10, 0, "RPM" ;
 ///   }
 /// }
 /// ```
@@ -55,11 +55,11 @@ Signal_encoding_types {
         logical_value, 0, "FALSE" ;
         logical_value, 1, "TRUE" ;
     }
-    ENC_TEMP {
-        physical_value, 0, 1023, 0.2, -40, "degC" ;
+    ENC_ENGINE_INTERNAL_TEMP {
+        physical_value, 0, 1023, 0.1, 100, "kelvin" ;
     }
-    ENC_RPM {
-        physical_value, 0, 1023, 10, 0, "rpm" ;
+    ENC_ENGINE_RPM {
+        physical_value, 0, 1023, 10, 0, "RPM" ;
     }
 }
 */
@@ -221,22 +221,26 @@ mod tests {
                     logical_value, 0, "FALSE" ;
                     logical_value, 1, "TRUE" ;
                 }
-                ENC_TEMP {
-                    physical_value, 0, 1023, 0.2, -40, "degC" ;
+                ENC_ENGINE_INTERNAL_TEMP {
+                    physical_value, 0, 1023, 0.1, 100, "kelvin" ;
                 }
-                ENC_RPM {
-                    physical_value, 0, 1023, 10, 0, "rpm" ;
+                ENC_ENGINE_RPM {
+                    physical_value, 0, 1023, 10, 0, "RPM" ;
+                }
+                ENC_WINDSHIELD_WIPER {
+                    logical_value, 0, "OFF" ;
+                    logical_value, 1, "ON" ;
                 }
                 ENC_SN {
                     physical_value, 0, 1023, 1E-05, 0, "unit" ;
                 }
                 ENC_SN2 {
-                    physical_value, 0, 1023, 1.5E-05, 0, "unit" ;
+                    physical_value, 0, 1023, 1.5E-05, 0 ; // Implied unit
                 }
             }
         "#;
         let (_, signal_encoding_types) = parse_ldf_signal_encoding_types(input).unwrap();
-        assert_eq!(signal_encoding_types.len(), 5);
+        assert_eq!(signal_encoding_types.len(), 6);
 
         let enc_bool = &signal_encoding_types[0];
         assert_eq!(enc_bool.encoding_type_name, "ENC_BOOL");
@@ -262,10 +266,10 @@ mod tests {
             _ => panic!("Expected LogicalValue"),
         }
 
-        let enc_temp = &signal_encoding_types[1];
-        assert_eq!(enc_temp.encoding_type_name, "ENC_TEMP");
-        assert_eq!(enc_temp.encoding_type_values.len(), 1);
-        match &enc_temp.encoding_type_values[0] {
+        let enc_engine_internal_temp = &signal_encoding_types[1];
+        assert_eq!(enc_engine_internal_temp.encoding_type_name, "ENC_ENGINE_INTERNAL_TEMP");
+        assert_eq!(enc_engine_internal_temp.encoding_type_values.len(), 1);
+        match &enc_engine_internal_temp.encoding_type_values[0] {
             LdfSignalEncodingTypeValue::PhysicalValue {
                 min_value,
                 max_value,
@@ -275,17 +279,17 @@ mod tests {
             } => {
                 assert_eq!(*min_value, 0);
                 assert_eq!(*max_value, 1023);
-                assert_eq!(*scaling_factor, 0.2);
-                assert_eq!(*offset, -40.0);
-                assert_eq!(unit, "degC");
+                assert_eq!(*scaling_factor, 0.1);
+                assert_eq!(*offset, 100.0);
+                assert_eq!(unit, "kelvin");
             }
             _ => panic!("Expected PhysicalValue"),
         }
 
-        let enc_rpm = &signal_encoding_types[2];
-        assert_eq!(enc_rpm.encoding_type_name, "ENC_RPM");
-        assert_eq!(enc_rpm.encoding_type_values.len(), 1);
-        match &enc_rpm.encoding_type_values[0] {
+        let enc_engine_rpm = &signal_encoding_types[2];
+        assert_eq!(enc_engine_rpm.encoding_type_name, "ENC_ENGINE_RPM");
+        assert_eq!(enc_engine_rpm.encoding_type_values.len(), 1);
+        match &enc_engine_rpm.encoding_type_values[0] {
             LdfSignalEncodingTypeValue::PhysicalValue {
                 min_value,
                 max_value,
@@ -297,12 +301,36 @@ mod tests {
                 assert_eq!(*max_value, 1023);
                 assert_eq!(*scaling_factor, 10.0);
                 assert_eq!(*offset, 0.0);
-                assert_eq!(unit, "rpm");
+                assert_eq!(unit, "RPM");
             }
             _ => panic!("Expected PhysicalValue"),
         }
 
-        let enc_sn = &signal_encoding_types[3];
+        let enc_windshield_wiper = &signal_encoding_types[3];
+        assert_eq!(enc_windshield_wiper.encoding_type_name, "ENC_WINDSHIELD_WIPER");
+        assert_eq!(enc_windshield_wiper.encoding_type_values.len(), 2);
+        match &enc_windshield_wiper.encoding_type_values[0] {
+            LdfSignalEncodingTypeValue::LogicalValue {
+                value,
+                value_description,
+            } => {
+                assert_eq!(*value, 0);
+                assert_eq!(value_description, "OFF");
+            }
+            _ => panic!("Expected LogicalValue"),
+        }
+        match &enc_windshield_wiper.encoding_type_values[1] {
+            LdfSignalEncodingTypeValue::LogicalValue {
+                value,
+                value_description,
+            } => {
+                assert_eq!(*value, 1);
+                assert_eq!(value_description, "ON");
+            }
+            _ => panic!("Expected LogicalValue"),
+        }
+
+        let enc_sn = &signal_encoding_types[4];
         assert_eq!(enc_sn.encoding_type_name, "ENC_SN");
         assert_eq!(enc_sn.encoding_type_values.len(), 1);
         match &enc_sn.encoding_type_values[0] {
@@ -322,7 +350,7 @@ mod tests {
             _ => panic!("Expected PhysicalValue"),
         }
 
-        let enc_sn2 = &signal_encoding_types[4];
+        let enc_sn2 = &signal_encoding_types[5];
         assert_eq!(enc_sn2.encoding_type_name, "ENC_SN2");
         assert_eq!(enc_sn2.encoding_type_values.len(), 1);
         match &enc_sn2.encoding_type_values[0] {
@@ -337,7 +365,7 @@ mod tests {
                 assert_eq!(*max_value, 1023);
                 assert_eq!(*scaling_factor, 1.5E-05);
                 assert_eq!(*offset, 0.0);
-                assert_eq!(unit, "unit");
+                assert_eq!(unit, "");
             }
             _ => panic!("Expected PhysicalValue"),
         }
@@ -348,7 +376,7 @@ mod tests {
         let input = r#"
             Signal_encoding_types {
                 ENC_IMPLIED_UNIT {
-                    physical_value, 0, 1023, 0.2, -40 ;
+                    physical_value, 0, 5, 0.1, 100 ;
                 }
             }
         "#;
@@ -367,9 +395,9 @@ mod tests {
                 unit,
             } => {
                 assert_eq!(*min_value, 0);
-                assert_eq!(*max_value, 1023);
-                assert_eq!(*scaling_factor, 0.2);
-                assert_eq!(*offset, -40.0);
+                assert_eq!(*max_value, 5);
+                assert_eq!(*scaling_factor, 0.1);
+                assert_eq!(*offset, 100.0);
                 assert_eq!(unit, "");
             }
             _ => panic!("Expected PhysicalValue"),
