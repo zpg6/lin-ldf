@@ -143,14 +143,23 @@ pub fn parse_ldf_signal_encoding_types(s: &str) -> IResult<&str, Vec<LdfSignalEn
                     let (s, _) = skip_whitespace(s)?;
                     let (s, offset) = take_while(|c: char| c.is_numeric() || c == '.' || c == '-')(s)?;
                     let (s, _) = skip_whitespace(s)?;
-                    let (s, _) = tag(",")(s)?;
-                    let (s, _) = skip_whitespace(s)?;
-                    let (s, _) = tag("\"")(s)?;
-                    let (s, unit) = take_until("\"")(s)?;
-                    let (s, _) = tag("\"")(s)?;
-                    let (s, _) = skip_whitespace(s)?;
-                    let (s, _) = tag(";")(s)?;
-                    let (s, _) = skip_whitespace(s)?;
+
+                    // Allow the unit to be left out (implied as an empty string)
+                    let (s, unit) = if s.starts_with(';') {
+                        let (s, _) = tag(";")(s)?;
+                        let (s, _) = skip_whitespace(s)?;
+                        (s, "")
+                    } else {
+                        let (s, _) = tag(",")(s)?;
+                        let (s, _) = skip_whitespace(s)?;
+                        let (s, _) = tag("\"")(s)?;
+                        let (s, unit) = take_until("\"")(s)?;
+                        let (s, _) = tag("\"")(s)?;
+                        let (s, _) = skip_whitespace(s)?;
+                        let (s, _) = tag(";")(s)?;
+                        let (s, _) = skip_whitespace(s)?;
+                        (s, unit)
+                    };
 
                     // Scaling factor may be in scientific notation (ex: 1E-05)
                     let scaling_factor = {
@@ -329,6 +338,39 @@ mod tests {
                 assert_eq!(*scaling_factor, 1.5E-05);
                 assert_eq!(*offset, 0.0);
                 assert_eq!(unit, "unit");
+            }
+            _ => panic!("Expected PhysicalValue"),
+        }
+    }
+
+    #[test]
+    fn test_parse_ldf_signal_encoding_type_implied_unit() {
+        let input = r#"
+            Signal_encoding_types {
+                ENC_IMPLIED_UNIT {
+                    physical_value, 0, 1023, 0.2, -40 ;
+                }
+            }
+        "#;
+        let (_, signal_encoding_types) = parse_ldf_signal_encoding_types(input).unwrap();
+        assert_eq!(signal_encoding_types.len(), 1);
+
+        let enc_implied_unit = &signal_encoding_types[0];
+        assert_eq!(enc_implied_unit.encoding_type_name, "ENC_IMPLIED_UNIT");
+        assert_eq!(enc_implied_unit.encoding_type_values.len(), 1);
+        match &enc_implied_unit.encoding_type_values[0] {
+            LdfSignalEncodingTypeValue::PhysicalValue {
+                min_value,
+                max_value,
+                scaling_factor,
+                offset,
+                unit,
+            } => {
+                assert_eq!(*min_value, 0);
+                assert_eq!(*max_value, 1023);
+                assert_eq!(*scaling_factor, 0.2);
+                assert_eq!(*offset, -40.0);
+                assert_eq!(unit, "");
             }
             _ => panic!("Expected PhysicalValue"),
         }
