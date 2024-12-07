@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "lin-ldf"
-version = "0.0.25"
+version = "0.0.26"
 dependencies = [
  "nom",
 ]

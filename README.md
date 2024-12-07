@@ -1,10 +1,5 @@
 # lin-ldf
 
-LIN Description File (.ldf) parser using Rust's `nom` parser combinator library. LIN is an automotive serial protocol used for communication between ECUs in a vehicle. (Opinion) It's very resilient, behaves simply, and easy to work with. The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
-
-> [!WARNING]
-> This crate is still in development and may not be suitable for production use.
-
 <br>
 <a href="https://crates.io/crates/lin-ldf">
     <img src="https://img.shields.io/crates/v/lin-ldf.svg" alt="Crates.io">
@@ -17,15 +12,25 @@ LIN Description File (.ldf) parser using Rust's `nom` parser combinator library.
 </a>
 <br><br>
 
+LIN Description File (.ldf) parser using Rust's `nom` parser combinator library. LIN is an automotive serial protocol used for communication between ECUs in a vehicle. The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
+
+> [!WARNING]
+> This crate may not be suitable for production use. It was written as hands-on learning exercise of a well-documented specification. It may not cover all edge cases or vendor-specific implementations. Please use with caution.
+
 This parser attempts to be a simple reflection of the well-documented instructions from the LIN specification: https://www.lin-cia.org/fileadmin/microsites/lin-cia.org/resources/documents/LIN_2.2A.pdf
 
-There are some existing parsers that have been around for years if you need something more robust:
+## Alternatives
 
-- https://github.com/c4deszes/ldfparser (Python)
+There are some existing alternatives that have been around for years if you need something more robust:
+
+- https://github.com/c4deszes/ldfparser (Python) (**most popular**)
 - https://github.com/uCAN-LIN/LinUSBConverter/tree/master/python_lib (Python)
 - https://github.com/TrippW/LDF-Parser (Python)
+- https://bitbucket.org/tobylorenz/lin/src/master/ (C++)
 
-...but I wanted to try my hand at writing a parser in Rust just for fun.
+Here are more recent alternatives:
+
+- https://github.com/dragonlock2/autodbconv (Rust)
 
 ## Supported LDF sections (so far)
 

@@ -1,6 +1,12 @@
 //! # lin-ldf
 //!
 //! LIN Description File (.ldf) parser using Rust's `nom` parser combinator library.
+//! LIN is an automotive serial protocol used for communication between ECUs in a vehicle.
+//! The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
+//!
+//! > ⚠️ WARNING:
+//! > This crate may not be suitable for production use. It was written as hands-on learning exercise of a well-documented specification. 
+//! > It may not cover all edge cases or vendor-specific implementations. Please use with caution.
 //!
 //! <br>
 //! <a href="https://crates.io/crates/lin-ldf">
@@ -12,7 +18,21 @@
 //! <a href="">
 //! <img src="https://img.shields.io/badge/license-MIT-blue.svg">
 //! </a>
-//! <br>
+//! <br><br>
+//!
+//! This parser attempts to be a simple reflection of the well-documented instructions from the LIN specification:
+//! [https://www.lin-cia.org/fileadmin/microsites/lin-cia.org/resources/documents/LIN_2.2A.pdf](https://www.lin-cia.org/fileadmin/microsites/lin-cia.org/resources/documents/LIN_2.2A.pdf)
+//!
+//! ## Alternatives
+//!
+//! There are some existing alternatives that have been around for years if you need something more robust:
+//! - [https://github.com/c4deszes/ldfparser](https://github.com/c4deszes/ldfparser) (Python) (**most popular**)
+//! - [https://github.com/uCAN-LIN/LinUSBConverter/tree/master/python_lib](https://github.com/uCAN-LIN/LinUSBConverter/tree/master/python_lib) (Python)
+//! - [https://github.com/TrippW/LDF-Parser](https://github.com/TrippW/LDF-Parser) (Python)
+//! - [https://bitbucket.org/tobylorenz/lin/src/master](https://bitbucket.org/tobylorenz/lin/src/master) (C++)
+//!
+//! Here are more recent alternatives I found:
+//! - [https://github.com/dragonlock2/autodbconv](https://github.com/dragonlock2/autodbconv) (Rust)
 //!
 //! ## Supported LDF sections (so far)
 //!  
