@@ -54,6 +54,12 @@ Here are more recent alternatives:
 
 (optional sections are in parentheses)
 
+## Other features
+
+- [x] Serde
+- [ ] WASM sub-crate
+- [ ] WASM NPM package
+
 > [!TIP]
 > It would be difficult to plan for all edge cases in vendor-specific implementations, so this just tries to follow the specification. CONTRIBUTIONS ARE WELCOMED! You can always open an issue or a PR if you find something that doesn't work as expected - but be sure to anonymize the data if it's proprietary (or just don't share it).
 

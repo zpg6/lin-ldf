@@ -17,6 +17,7 @@ use nom::{
 ///    }
 /// }
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfFrame {
     /// Frame name
     pub frame_name: String,
@@ -47,6 +48,7 @@ pub struct LdfFrame {
 ///    }
 /// }
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfFrameSignal {
     /// Signal name
     pub signal_name: String,

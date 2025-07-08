@@ -22,6 +22,7 @@ use crate::ldf::ldf_signal_encoding_types::{parse_ldf_signal_encoding_types, Ldf
 use crate::ldf::ldf_signal_representation::{parse_ldf_signal_representation, LdfSignalRepresentation};
 use crate::ldf::ldf_signals::{parse_ldf_signals, LdfSignal};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LinLdf {
     pub header: LdfHeader,
     pub nodes: LdfNodes,

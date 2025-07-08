@@ -7,6 +7,7 @@ use nom::{
 /// The init_value specifies the signal value that shall be used by all subscriber nodes.
 /// The init_value_scalar is used for scalar signals and the init_value_array is used for byte array signals.
 #[derive(Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum LdfSignalInitValue {
     Scalar(u8),
     Array(Vec<u8>),
@@ -32,6 +33,7 @@ pub enum LdfSignalInitValue {
 /// ```text
 /// <signal_name>: <signal_size>, <init_value>, <published_by> [, <subscribed_by>] ;
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfSignal {
     /// All identifiers must be unique within the LDF file.
     pub name: String,
@@ -115,17 +117,14 @@ pub fn parse_ldf_signals(s: &str) -> IResult<&str, Vec<LdfSignal>> {
         let (s, _) = skip_whitespace(s)?;
         let (s, published_by) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
         let (s, _) = skip_whitespace(s)?;
-        
+
         let (s, symbol) = take_while(|c: char| c == ',' || c == ';')(s)?;
         let mut subscribed_by = Vec::new();
         let s = match symbol {
             "," => {
                 // There is at least one subscribed_by node
                 let (s, subscribed_by_str) = take_until(";")(s)?;
-                subscribed_by = subscribed_by_str
-                    .split(',')
-                    .map(|s| s.trim().to_string())
-                    .collect();
+                subscribed_by = subscribed_by_str.split(',').map(|s| s.trim().to_string()).collect();
                 let (s, _) = tag(";")(s)?;
                 s
             }

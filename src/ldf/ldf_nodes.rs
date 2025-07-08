@@ -11,12 +11,14 @@ use nom::{
 ///   Slaves: Slave1, Slave2, Slave3 ;
 /// }
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfNodes {
     pub master: MasterNode,
     pub slaves: Vec<Node>,
 }
 
 /// Master node in the `Nodes` section of a LIN Description File (LDF) for LIN 2.1
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MasterNode {
     // Identifier after the Master reserved word specifies the master node.
     // All identifiers must be unique within the LDF file.
@@ -36,6 +38,7 @@ pub struct MasterNode {
 }
 
 /// Slave node in the `Nodes` section of a LIN Description File (LDF) for LIN 2.1
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Node {
     // All identifiers must be unique within the LDF file.
     pub name: String,

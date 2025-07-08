@@ -28,6 +28,7 @@ use nom::{
 ///     SlaveRespB7, 56 ;
 ///   }
 /// }
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfDiagnosticFrame {
     /// Frame name
     pub frame_name: String,
@@ -43,6 +44,7 @@ pub struct LdfDiagnosticFrame {
 /// ```text
 /// MasterReqB0, 0 ;
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfDiagnosticFrameSignal {
     /// Signal name
     pub signal_name: String,

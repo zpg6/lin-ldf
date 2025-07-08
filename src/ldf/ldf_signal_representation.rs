@@ -11,6 +11,7 @@ use nom::{
 ///   ENC_TEMP: Signal3, Signal4 ;
 ///   ENC_RPM: Signal5, Signal6 ;
 /// }
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfSignalRepresentation {
     /// Signal encoding type name
     pub encoding_type_name: String,

@@ -5,7 +5,7 @@
 //! The LDF file is used to describe the network configuration, including the different nodes and signals sent between them.
 //!
 //! > ⚠️ WARNING:
-//! > This crate may not be suitable for production use. It was written as hands-on learning exercise of a well-documented specification. 
+//! > This crate may not be suitable for production use. It was written as hands-on learning exercise of a well-documented specification.
 //! > It may not cover all edge cases or vendor-specific implementations. Please use with caution.
 //!
 //! <br>

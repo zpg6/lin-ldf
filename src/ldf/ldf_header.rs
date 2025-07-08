@@ -13,6 +13,7 @@ use crate::ldf::ldf_comment::skip_whitespace;
 /// LIN_speed = 19.2 kbps ;
 /// Channel_name = "DB";
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfHeader {
     /// LIN protocol version number (e.g. 2.1).
     /// Shall be in the range of "0.01" to "99.99".

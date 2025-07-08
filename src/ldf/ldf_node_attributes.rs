@@ -39,6 +39,7 @@ use nom::{
 ///   }
 /// }
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfNodeAttributes {
     /// Node name
     pub node_name: String,
@@ -165,7 +166,7 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
             res = s;
         }
         let s = res;
-        
+
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag("P2_min")(s)?;
         let (s, _) = skip_whitespace(s)?;

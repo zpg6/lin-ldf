@@ -13,6 +13,7 @@ use nom::{
 ///   }
 /// }
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfScheduleTable {
     /// Schedule table name.
     /// All schedule_table_name identifiers shall be unique within the schedule table identifier set
@@ -26,6 +27,7 @@ pub struct LdfScheduleTable {
 /// ```text
 /// Frame1 delay 10 ms ;
 /// ```
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct LdfFrameDelay {
     /// Frame name
     pub frame_name: String,
