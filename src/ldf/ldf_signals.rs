@@ -115,11 +115,29 @@ pub fn parse_ldf_signals(s: &str) -> IResult<&str, Vec<LdfSignal>> {
         let (s, _) = skip_whitespace(s)?;
         let (s, published_by) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
         let (s, _) = skip_whitespace(s)?;
-        let (s, _) = tag(",")(s)?;
-        let (s, _) = skip_whitespace(s)?;
-        let (s, subscribed_by_str) = take_until(";")(s)?;
-        let subscribed_by: Vec<String> = subscribed_by_str.split(',').map(|s| s.trim().to_string()).collect();
-        let (s, _) = tag(";")(s)?;
+        
+        let (s, symbol) = take_while(|c: char| c == ',' || c == ';')(s)?;
+        let mut subscribed_by = Vec::new();
+        let s = match symbol {
+            "," => {
+                // There is at least one subscribed_by node
+                let (s, subscribed_by_str) = take_until(";")(s)?;
+                subscribed_by = subscribed_by_str
+                    .split(',')
+                    .map(|s| s.trim().to_string())
+                    .collect();
+                let (s, _) = tag(";")(s)?;
+                s
+            }
+            ";" => {
+                // There are no subscribed_by nodes
+                s
+            }
+            _ => {
+                // This should not happen, but we can handle it gracefully
+                s
+            }
+        };
         let (s, _) = skip_whitespace(s)?;
 
         remaining = s;
