@@ -1,0 +1,21 @@
+# WASM build artifacts
+pkg/
+*.wasm
+*.wat
+
+# Node modules (if using npm)
+node_modules/
+
+# macOS
+.DS_Store
+
+# Cargo build artifacts
+target/
+Cargo.lock
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~ 

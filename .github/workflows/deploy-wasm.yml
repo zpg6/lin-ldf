@@ -1,0 +1,64 @@
+name: Build and Deploy WASM Demo
+
+on:
+  push:
+    paths:
+      - "wasm/**"
+      - "src/**"
+      - "Cargo.toml"
+      - ".github/workflows/deploy-wasm.yml" # This file
+    branches:
+      - main
+
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build WASM module
+        run: |
+          cd wasm
+          wasm-pack build --target web --out-dir pkg
+
+      - name: Prepare deployment files
+        run: |
+          mkdir -p deploy
+          cp wasm/index.html deploy/
+          cp -r wasm/pkg deploy/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './deploy'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 

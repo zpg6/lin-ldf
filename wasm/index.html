@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lin-ldf - WebAssembly Demo</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .input-section {
+        margin-bottom: 30px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        resize: vertical;
+      }
+
+      .buttons {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 0 10px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .output-section {
+        margin-top: 30px;
+      }
+
+      .result {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+        white-space: pre-wrap;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+      }
+
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+      }
+
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border-color: #bee5eb;
+        margin-bottom: 20px;
+        line-height: 1.6;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .section-title {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+        margin-top: 40px;
+        margin-bottom: 20px;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      .data-table th,
+      .data-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      .data-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+      }
+
+      .data-table tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      .frame-section {
+        margin-bottom: 30px;
+      }
+
+      .frame-section h4 {
+        margin-top: 25px;
+        margin-bottom: 10px;
+      }
+
+      .table-of-contents {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 30px;
+      }
+
+      .table-of-contents h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .table-of-contents ul {
+        margin: 0;
+        padding-left: 20px;
+        list-style-type: none;
+      }
+
+      .table-of-contents li {
+        margin-bottom: 5px;
+      }
+
+      .table-of-contents a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .table-of-contents a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>lin-ldf - WebAssembly Demo</h1>
+
+      <div class="info result">
+        <strong>About:</strong> This demo shows the capabilities of the
+        <a
+          href="https://github.com/zpg6/lin-ldf"
+          target="_blank"
+          style="color: #007bff; text-decoration: none"
+          >lin-ldf</a
+        >
+        Rust parser running in your browser via lin-ldf-wasm. LDF files describe
+        automotive LIN bus network configurations including nodes, signals,
+        frames, and scheduling.
+
+        <a
+          href="https://www.lin-cia.org/fileadmin/microsites/lin-cia.org/resources/documents/LIN_2.2A.pdf"
+          target="_blank"
+          style="color: #007bff; text-decoration: none"
+          >View Full LIN 2.1 Specification</a
+        >
+      </div>
+
+      <div class="input-section">
+        <label for="ldf-input">Enter LDF Content:</label>
+        <textarea
+          id="ldf-input"
+          placeholder="Paste your LDF content here or click 'Load Example' to see a sample..."
+        ></textarea>
+      </div>
+
+      <div class="buttons">
+        <button id="load-example">Load Example</button>
+        <button id="parse-button">Parse LDF</button>
+        <button id="clear-button">Clear</button>
+      </div>
+
+      <div class="output-section">
+        <div id="status"></div>
+        <div id="stats"></div>
+        <div id="result"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      import init, { parse_ldf_file, get_wasm_version } from "./pkg/lin_ldf_wasm.js";
+
+      let wasm;
+
+      async function run() {
+        try {
+          wasm = await init();
+          console.log("lin-ldf-wasm module loaded, version:", get_wasm_version());
+          document.getElementById("parse-button").disabled = false;
+          showStatus("lin-ldf-wasm module loaded successfully!", "success");
+        } catch (error) {
+          console.error("Failed to load lin-ldf-wasm module:", error);
+          showStatus(
+            "Failed to load lin-ldf-wasm module: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      function showStatus(message, type) {
+        const statusDiv = document.getElementById("status");
+        statusDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+      }
+
+      function showStats(parsedLdf) {
+        const statsDiv = document.getElementById("stats");
+        statsDiv.innerHTML = `
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">${
+                          parsedLdf.signals.length
+                        }</div>
+                        <div class="stat-label">Signals</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${
+                          parsedLdf.frames.length
+                        }</div>
+                        <div class="stat-label">Frames</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${
+                          parsedLdf.nodes.slaves.length + 1
+                        }</div>
+                        <div class="stat-label">Nodes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${
+                          parsedLdf.schedule_tables.length
+                        }</div>
+                        <div class="stat-label">Schedules</div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function formatParsedData(parsedLdf) {
+        let output = "";
+
+        // Build table of contents
+        let toc = `<div class="table-of-contents">
+          <h3>Table of Contents</h3>
+          <ul>
+            <li><a href="#header-info">Header Information</a></li>
+            <li><a href="#network-nodes">Network Nodes</a></li>`;
+
+        if (parsedLdf.signals.length > 0) {
+          toc += `<li><a href="#signals">Signals</a></li>`;
+        }
+
+        if (parsedLdf.frames.length > 0) {
+          toc += `<li><a href="#frames">Frames</a></li>`;
+        }
+
+        if (parsedLdf.schedule_tables.length > 0) {
+          toc += `<li><a href="#schedule-tables">Schedule Tables</a></li>`;
+        }
+
+        toc += `</ul>
+        </div>`;
+
+        output += toc;
+
+        // Header Information
+        output += `<h3 class="section-title" id="header-info">Header Information</h3>`;
+        output += `<table class="data-table">
+                <tr><th>Property</th><th>Value</th></tr>
+                <tr><td>Protocol Version</td><td>${
+                  parsedLdf.header.lin_protocol_version
+                }</td></tr>
+                <tr><td>Language Version</td><td>${
+                  parsedLdf.header.lin_language_version
+                }</td></tr>
+                <tr><td>Speed</td><td>${
+                  parsedLdf.header.lin_speed
+                } bps</td></tr>
+                ${
+                  parsedLdf.header.channel_name
+                    ? `<tr><td>Channel Name</td><td>${parsedLdf.header.channel_name}</td></tr>`
+                    : ""
+                }
+            </table>`;
+
+        // Nodes
+        output += `<h3 class="section-title" id="network-nodes">Network Nodes</h3>`;
+        output += `<table class="data-table">
+                <tr><th>Type</th><th>Name</th><th>Time Base</th><th>Jitter</th></tr>
+                <tr><td>Master</td><td>${parsedLdf.nodes.master.name}</td><td>${parsedLdf.nodes.master.time_base}</td><td>${parsedLdf.nodes.master.jitter}</td></tr>
+            </table>`;
+
+        if (parsedLdf.nodes.slaves.length > 0) {
+          output += `<table class="data-table">
+                    <tr><th>Slave Nodes</th></tr>
+                    ${parsedLdf.nodes.slaves
+                      .map((slave) => `<tr><td>${slave.name}</td></tr>`)
+                      .join("")}
+                </table>`;
+        }
+
+        // Signals
+        if (parsedLdf.signals.length > 0) {
+          output += `<h3 class="section-title" id="signals">Signals</h3>`;
+          output += `<table class="data-table">
+                    <tr><th>Name</th><th>Size (bits)</th><th>Init Value</th><th>Publisher</th><th>Subscribers</th></tr>
+                    ${parsedLdf.signals
+                      .map(
+                        (signal) => `
+                        <tr>
+                            <td>${signal.name}</td>
+                            <td>${signal.signal_size}</td>
+                            <td>${JSON.stringify(signal.init_value)}</td>
+                            <td>${signal.published_by}</td>
+                            <td>${signal.subscribed_by.join(", ")}</td>
+                        </tr>
+                    `
+                      )
+                      .join("")}
+                </table>`;
+        }
+
+        // Frames
+        if (parsedLdf.frames.length > 0) {
+          output += `<h3 class="section-title" id="frames">Frames</h3>`;
+          parsedLdf.frames.forEach((frame) => {
+            output += `<div class="frame-section">`;
+            output += `<h4>${frame.frame_name} LIN ID: 0x${frame.frame_id
+              .toString(16)
+              .padStart(2, "0")
+              .toUpperCase()}</h4>`;
+            output += `<table class="data-table">
+                        <tr><th>Property</th><th>Value</th></tr>
+                        <tr><td>Publisher</td><td>${frame.published_by}</td></tr>
+                        <tr><td>Size</td><td>${frame.frame_size} bytes</td></tr>
+                    </table>`;
+
+            if (frame.signals.length > 0) {
+              output += `<table class="data-table">
+                            <tr><th>Signal</th><th>Start Bit</th></tr>
+                            ${frame.signals
+                              .map(
+                                (signal) => `
+                                <tr>
+                                    <td>${signal.signal_name}</td>
+                                    <td>${signal.start_bit}</td>
+                                </tr>
+                            `
+                              )
+                              .join("")}
+                        </table>`;
+            }
+            output += `</div>`;
+          });
+        }
+
+        // Schedule Tables
+        if (parsedLdf.schedule_tables.length > 0) {
+          output += `<h3 class="section-title" id="schedule-tables">Schedule Tables</h3>`;
+          parsedLdf.schedule_tables.forEach((schedule) => {
+            output += `<h4>${schedule.schedule_table_name}</h4>`;
+            output += `<table class="data-table">
+                        <tr><th>Frame</th><th>Delay (ms)</th></tr>
+                        ${schedule.frame_delays
+                          .map(
+                            (entry) => `
+                            <tr>
+                                <td>${entry.frame_name}</td>
+                                <td>${entry.frame_time}</td>
+                            </tr>
+                        `
+                          )
+                          .join("")}
+                    </table>`;
+          });
+        }
+
+        return output;
+      }
+
+      function parseLdf() {
+        const input = document.getElementById("ldf-input").value.trim();
+
+        if (!input) {
+          showStatus("Please enter LDF content to parse", "error");
+          return;
+        }
+
+        if (!wasm) {
+          showStatus("lin-ldf-wasm module not loaded yet", "error");
+          return;
+        }
+
+        try {
+          const result = parse_ldf_file(input);
+          console.log("Parsed LDF:", result);
+
+          showStatus("LDF parsed successfully!", "success");
+          showStats(result);
+
+          const formattedOutput = formatParsedData(result);
+          document.getElementById("result").innerHTML = formattedOutput;
+        } catch (error) {
+          console.error("Parse error:", error);
+          showStatus("Parse error: " + error, "error");
+          document.getElementById("result").innerHTML = "";
+          document.getElementById("stats").innerHTML = "";
+        }
+      }
+
+      function loadExample() {
+        const exampleLdf = `/* MY BLOCK COMMENT */
+            
+LIN_description_file ; 
+LIN_protocol_version = "2.1" ; 
+LIN_language_version = "2.1" ; 
+LIN_speed = 19.2 kbps ;
+
+Nodes {
+    Master: Master, 5 ms, 0.1 ms ;
+    Slaves: Slave1, Slave2, Slave3 ;
+}
+
+// MY LINE COMMENT
+
+Signals {
+    Signal1: 10, 0, Master, Slave1 , Slave2 ;
+    Signal2: 10, 0, Master, Slave1 ;
+    Signal3: 10, 0, Master, Slave1 ;
+    Signal4: 10, 0, Slave1, Master ;
+    Signal5: 2, 0, Slave1, Master ;
+    Signal6: 1, 0, Slave1, Master ;
+}
+
+Diagnostic_signals {
+    MasterReqB0: 8, 0 ;   /* MID SECTION COMMENT */
+    MasterReqB1: 8, 0 ;
+    MasterReqB2: 8, 0 ;
+    MasterReqB3: 8, 0 ;
+    MasterReqB4: 8, 0 ;
+    MasterReqB5: 8, 0 ;   /* MID SECTION COMMENT */
+}
+
+Frames {
+    Frame1: 0, Master, 8 {
+        Signal1, 0 ;      /* MID SECTION COMMENT */
+        Signal2, 10 ;
+    }
+    Frame2: 0x16, Slave1, 8 {
+        Signal3, 0 ;
+        Signal4, 10 ;
+    }
+}
+
+Diagnostic_frames {
+    MasterReq: 0x3C {
+        MasterReqB0, 0 ;
+        MasterReqB1, 8 ;
+        MasterReqB2, 16 ;
+        MasterReqB3, 24 ;
+        MasterReqB4, 32 ;
+        MasterReqB5, 40 ;
+        MasterReqB6, 48 ;
+        MasterReqB7, 56 ;
+    }
+    SlaveResp: 0x3D {
+        SlaveRespB0, 0 ;
+        SlaveRespB1, 8 ;
+        SlaveRespB2, 16 ;
+        SlaveRespB3, 24 ;
+        SlaveRespB4, 32 ;
+        SlaveRespB5, 40 ;
+        SlaveRespB6, 48 ;
+        SlaveRespB7, 56 ;
+    }
+}
+
+Node_attributes {
+    Slave1{
+        LIN_protocol = "2.1" ;
+        configured_NAD = 0xB ;
+        initial_NAD = 0xB ;
+        product_id = 0x123, 0x4567, 8 ;
+        response_error = Signal1 ;
+        P2_min = 100 ms ;
+        ST_min = 0 ms ;
+        N_As_timeout = 1000 ms ;
+        N_Cr_timeout = 1000 ms ;
+        configurable_frames {
+            Frame1 ;
+            Frame2 ;  
+        }
+    }
+    Slave2{
+        LIN_protocol = "2.1" ;
+        configured_NAD = 0xC ;
+        initial_NAD = 0xC ;
+        product_id = 0x124, 0x4568, 0x66 ;
+        response_error = Signal2 ;
+        P2_min = 100 ms ;
+        ST_min = 0 ms ;
+        N_As_timeout = 1000 ms ;
+        N_Cr_timeout = 1000 ms ;
+        configurable_frames {
+            Frame1 ;
+            Frame2 ;
+        }
+    }
+}
+
+Schedule_tables {
+    AllFrames {
+        Frame1 delay 10 ms ;
+        Frame2 delay 10 ms ;
+    }
+}
+
+Signal_encoding_types {
+    ENC_BOOL {
+        logical_value, 0, "FALSE" ;
+        logical_value, 1, "TRUE" ;
+    }
+    ENC_TEMP {
+        physical_value, 0, 1023, 0.2, -40, "degC" ;
+    }
+    ENC_RPM {
+        physical_value, 0, 1023, 10, 0, "rpm" ;
+    }
+}
+
+Signal_representation {
+    ENC_BOOL: Signal1, Signal2 ;
+    ENC_TEMP: Signal3, Signal4 ;
+    ENC_RPM: Signal5, Signal6 ;
+}
+        `;
+
+        document.getElementById("ldf-input").value = exampleLdf;
+        showStatus(
+          'Example LDF loaded. Click "Parse LDF" to analyze it.',
+          "success"
+        );
+      }
+
+      function clearAll() {
+        document.getElementById("ldf-input").value = "";
+        document.getElementById("result").innerHTML = "";
+        document.getElementById("stats").innerHTML = "";
+        document.getElementById("status").innerHTML = "";
+      }
+
+      // Event listeners
+      document
+        .getElementById("parse-button")
+        .addEventListener("click", parseLdf);
+      document
+        .getElementById("load-example")
+        .addEventListener("click", loadExample);
+      document
+        .getElementById("clear-button")
+        .addEventListener("click", clearAll);
+
+      // Initially disable parse button until WASM loads
+      document.getElementById("parse-button").disabled = true;
+
+      // Initialize WASM
+      run();
+    </script>
+  </body>
+</html>

@@ -32,6 +32,12 @@ Here are more recent alternatives:
 
 - https://github.com/dragonlock2/autodbconv (Rust)
 
+## Features
+
+- [x] Serde
+- [x] WASM sub-crate
+- [ ] WASM NPM package
+
 ## Supported LDF sections (so far)
 
 - [x] LIN_protocol_version
@@ -54,14 +60,28 @@ Here are more recent alternatives:
 
 (optional sections are in parentheses)
 
-## Other features
-
-- [x] Serde
-- [ ] WASM sub-crate
-- [ ] WASM NPM package
-
 > [!TIP]
 > It would be difficult to plan for all edge cases in vendor-specific implementations, so this just tries to follow the specification. CONTRIBUTIONS ARE WELCOMED! You can always open an issue or a PR if you find something that doesn't work as expected - but be sure to anonymize the data if it's proprietary (or just don't share it).
+
+## WebAssembly Demo
+
+There's also a WebAssembly version that runs in the browser!
+
+🚀 **[Try the live demo](https://zpg6.github.io/lin-ldf/)** - Check out `lin-ldf` with no installation required!
+
+Or run it locally in the `wasm/` directory:
+
+```bash
+# Build the WASM module
+cd wasm
+./build.sh
+
+# Run the demo
+python3 -m http.server 8000
+# Then open http://localhost:8000
+```
+
+Perfect for quickly validating LDF files or exploring the parser's capabilities without installing!
 
 # Example
 
