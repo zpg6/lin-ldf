@@ -148,14 +148,24 @@ pub fn parse_ldf_node_attributes(s: &str) -> IResult<&str, Vec<LdfNodeAttributes
         let (s, _) = tag(";")(s)?;
 
         let (s, _) = skip_whitespace(s)?;
-        let (s, _) = tag("response_error")(s)?;
-        let (s, _) = skip_whitespace(s)?;
-        let (s, _) = tag("=")(s)?;
-        let (s, _) = skip_whitespace(s)?;
-        let (s, response_error) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
-        let (s, _) = skip_whitespace(s)?;
-        let (s, _) = tag(";")(s)?;
-
+        // response_error is the optional section
+        let mut response_error = "";
+        let res;
+        if s.starts_with("response_error") {
+            let (s, _) = tag("response_error")(s)?;
+            let (s, _) = skip_whitespace(s)?;
+            let (s, _) = tag("=")(s)?;
+            let (s, _) = skip_whitespace(s)?;
+            let (s, resp_err) = take_while(|c: char| c.is_alphanumeric() || c == '_')(s)?;
+            response_error = resp_err;
+            let (s, _) = skip_whitespace(s)?;
+            let (s, _) = tag(";")(s)?;
+            res = s;
+        } else {
+            res = s;
+        }
+        let s = res;
+        
         let (s, _) = skip_whitespace(s)?;
         let (s, _) = tag("P2_min")(s)?;
         let (s, _) = skip_whitespace(s)?;
