@@ -58,32 +58,105 @@ impl LinLdf {
     /// (<Signal_representation_def>)
     /// ```
     pub fn parse(s: &str) -> Result<LinLdf, &'static str> {
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, header) = parse_ldf_header(s).map_err(|_| "Failed to parse header")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, nodes) = parse_ldf_nodes(s).map_err(|_| "Failed to parse Nodes section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, signals) = parse_ldf_signals(s).map_err(|_| "Failed to parse Signals section (required)")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, diagnostic_signals) =
-            parse_ldf_diagnostic_signals(s).map_err(|_| "Failed to parse Diagnostic_signals section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, frames) = parse_ldf_frames(s).map_err(|_| "Failed to parse Frames section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, diagnostic_frames) =
-            parse_ldf_diagnostic_frames(s).map_err(|_| "Failed to parse Diagnostic_frames section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, node_attributes) =
-            parse_ldf_node_attributes(s).map_err(|_| "Failed to parse Node_attributes section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, schedule_tables) =
-            parse_ldf_schedule_tables(s).map_err(|_| "Failed to parse Schedule_tables section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (s, signal_encoding_types) =
-            parse_ldf_signal_encoding_types(s).map_err(|_| "Failed to parse Signal_encoding_types section")?;
-        let (s, _) = skip_whitespace(s).map_err(|_| "Failed to skip whitespace and comments")?;
-        let (_, signal_representations) =
-            parse_ldf_signal_representation(s).map_err(|_| "Failed to parse Signal_representation section")?;
+        // Header
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e.to_string());
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, header) = parse_ldf_header(s).map_err(|e| {
+            eprintln!("Failed to parse header: {}", e);
+            "Failed to parse header"
+        })?;
+
+        // Nodes
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, nodes) = parse_ldf_nodes(s).map_err(|e| {
+            eprintln!("Failed to parse Nodes section: {}", e);
+            "Failed to parse Nodes section"
+        })?;
+
+        // Signals
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, signals) = parse_ldf_signals(s).map_err(|e| {
+            eprintln!("Failed to parse Signals section: {}", e);
+            "Failed to parse Signals section"
+        })?;
+
+        // Diagnostic signals
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, diagnostic_signals) = parse_ldf_diagnostic_signals(s).map_err(|e| {
+            eprintln!("Failed to parse Diagnostic_signals section: {}", e);
+            "Failed to parse Diagnostic_signals section"
+        })?;
+
+        // Frames
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, frames) = parse_ldf_frames(s).map_err(|e| {
+            eprintln!("Failed to parse Frames section: {}", e);
+            "Failed to parse Frames section"
+        })?;
+
+        // Diagnostic frames
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, diagnostic_frames) = parse_ldf_diagnostic_frames(s).map_err(|e| {
+            eprintln!("Failed to parse Diagnostic_frames section: {}", e);
+            "Failed to parse Diagnostic_frames section"
+        })?;
+
+        // Node attributes
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, node_attributes) = parse_ldf_node_attributes(s).map_err(|e| {
+            eprintln!("Failed to parse Node_attributes section: {}", e);
+            "Failed to parse Node_attributes section"
+        })?;
+
+        // Schedule tables
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, schedule_tables) = parse_ldf_schedule_tables(s).map_err(|e| {
+            eprintln!("Failed to parse Schedule_tables section: {}", e);
+            "Failed to parse Schedule_tables section"
+        })?;
+
+        // Signal encoding types
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (s, signal_encoding_types) = parse_ldf_signal_encoding_types(s).map_err(|e| {
+            eprintln!("Failed to parse Signal_encoding_types section: {}", e);
+            "Failed to parse Signal_encoding_types section"
+        })?;
+
+        // Signal representations
+        let (s, _) = skip_whitespace(s).map_err(|e| {
+            eprintln!("Failed to skip whitespace and comments: {}", e);
+            "Failed to skip whitespace and comments"
+        })?;
+        let (_, signal_representations) = parse_ldf_signal_representation(s).map_err(|e| {
+            eprintln!("Failed to parse Signal_representation section: {}", e);
+            "Failed to parse Signal_representation section"
+        })?;
 
         Ok(LinLdf {
             header,
