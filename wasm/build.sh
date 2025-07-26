@@ -6,11 +6,22 @@ set -e
 
 echo "🦀 Building lin-ldf WASM module..."
 
-# Check if wasm-pack is installed
+# Check if wasm-pack is installed, auto-install if cargo is available
 if ! command -v wasm-pack &> /dev/null; then
-    echo "❌ wasm-pack not found. Please install it first:"
-    echo "   cargo install wasm-pack"
-    exit 1
+    echo "⚠️  wasm-pack not found."
+    if command -v cargo &> /dev/null; then
+        echo "🔧 Installing wasm-pack via cargo..."
+        cargo install wasm-pack
+        if [ $? -ne 0 ]; then
+            echo "❌ Failed to install wasm-pack"
+            exit 1
+        fi
+        echo "✅ wasm-pack installed successfully"
+    else
+        echo "❌ cargo not found. Please install Rust and cargo first:"
+        echo "   https://rustup.rs/"
+        exit 1
+    fi
 fi
 
 # Build the WASM module

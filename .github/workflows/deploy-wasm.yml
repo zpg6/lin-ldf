@@ -37,13 +37,11 @@ jobs:
           toolchain: stable
           target: wasm32-unknown-unknown
 
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
       - name: Build WASM module
         run: |
           cd wasm
-          wasm-pack build --target web --out-dir pkg
+          chmod +x build.sh
+          ./build.sh
 
       - name: Prepare deployment files
         run: |
