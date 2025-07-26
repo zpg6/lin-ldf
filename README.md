@@ -36,7 +36,19 @@ Here are more recent alternatives:
 
 - [x] Serde
 - [x] WASM sub-crate
-- [ ] WASM NPM package
+- [x] WASM NPM package
+
+## NPM package
+
+[![NPM Version](https://img.shields.io/npm/v/lin-ldf)](https://www.npmjs.com/package/lin-ldf)
+[![NPM Downloads](https://img.shields.io/npm/dt/lin-ldf)](https://www.npmjs.com/package/lin-ldf)
+[![License: MIT](https://img.shields.io/npm/l/lin-ldf)](https://opensource.org/licenses/MIT)
+
+```bash
+npm install lin-ldf
+```
+
+See [wasm/README.md](wasm/README.md) for more details.
 
 ## Supported LDF sections (so far)
 
@@ -177,3 +189,11 @@ for frame in parsed_ldf.frames {
     }
 }
 ```
+
+## License
+
+[MIT](./LICENSE)
+
+## Contributing
+
+Contributions are welcome! Whether it's bug fixes, feature additions, or documentation improvements, we appreciate your help in making this project better. For major changes or new features, please open an issue first to discuss what you would like to change.
