@@ -1,13 +1,14 @@
 [package]
 name = "lin-ldf-wasm"
-version = "0.0.1"
+version = "0.1.0"
+description = "WebAssembly parser for LDF files that describe automotive LIN bus networks."
 edition = "2021"
 license = "MIT"
 authors = ["Zach Grimaldi <zpg6@pitt.edu>"]
 documentation = "https://docs.rs/lin-ldf"
 repository = "https://github.com/zpg6/lin-ldf"
-categories = ["development-tools"]
-keywords = ["ldf", "parser", "lin", "linbus", "automotive"]
+categories = ["development-tools", "wasm"]
+keywords = ["ldf", "parser", "lin", "linbus", "automotive", "wasm", "webassembly"]
 
 [lib]
 crate-type = ["cdylib"]
