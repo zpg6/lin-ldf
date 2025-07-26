@@ -3,6 +3,19 @@
 # Build WASM with enhanced TypeScript definitions
 echo "🔧 Building WASM package with enhanced TypeScript definitions..."
 
+# Check if wasm-pack is installed, install if not
+if ! command -v wasm-pack &> /dev/null; then
+    echo "📦 wasm-pack not found, installing via cargo..."
+    cargo install wasm-pack
+    
+    # Verify installation
+    if ! command -v wasm-pack &> /dev/null; then
+        echo "❌ Failed to install wasm-pack"
+        exit 1
+    fi
+    echo "✅ wasm-pack installed successfully"
+fi
+
 # Generate TypeScript bindings with ts-rs
 echo "📝 Generating TypeScript definitions..."
 cargo test generate_typescript_bindings --features ts-rs --quiet
