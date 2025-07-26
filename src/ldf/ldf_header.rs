@@ -14,6 +14,8 @@ use crate::ldf::ldf_comment::skip_whitespace;
 /// Channel_name = "DB";
 /// ```
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfHeader {
     /// LIN protocol version number (e.g. 2.1).
     /// Shall be in the range of "0.01" to "99.99".

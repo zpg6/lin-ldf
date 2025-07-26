@@ -23,6 +23,8 @@ use crate::ldf::ldf_signal_representation::{parse_ldf_signal_representation, Ldf
 use crate::ldf::ldf_signals::{parse_ldf_signals, LdfSignal};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LinLdf {
     pub header: LdfHeader,
     pub nodes: LdfNodes,

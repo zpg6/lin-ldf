@@ -45,6 +45,27 @@ mod demo {
     pub(crate) fn log_parse_error(_e: &str) {}
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    #[cfg(feature = "ts-rs")]
+    fn generate_typescript_bindings() {
+        // This test triggers ts-rs to generate TypeScript definitions
+        // when run with: cargo test --features ts-rs
+        
+        // Import and reference all types to trigger export
+        use lin_ldf::*;
+        use ts_rs::TS;
+        
+        // Export types by calling their TS generation
+        LinLdf::export_all_to("./types").unwrap();
+        
+        println!("TypeScript bindings generated in wasm/types/");
+    }
+}
+
 // Use smaller allocator for WASM - this is generally good for any WASM usage
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;

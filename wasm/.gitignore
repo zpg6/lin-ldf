@@ -1,5 +1,6 @@
 # WASM build artifacts
 pkg/
+types/
 *.wasm
 *.wat
 

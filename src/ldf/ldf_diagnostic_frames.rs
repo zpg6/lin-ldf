@@ -29,6 +29,8 @@ use nom::{
 ///   }
 /// }
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfDiagnosticFrame {
     /// Frame name
     pub frame_name: String,
@@ -45,6 +47,8 @@ pub struct LdfDiagnosticFrame {
 /// MasterReqB0, 0 ;
 /// ```
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfDiagnosticFrameSignal {
     /// Signal name
     pub signal_name: String,

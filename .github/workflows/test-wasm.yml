@@ -1,0 +1,98 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - "wasm/**"
+      - "src/**"
+      - "Cargo.toml"
+      - ".github/workflows/test-wasm.yml" # This file
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "wasm/**"
+      - "src/**"
+      - "Cargo.toml"
+      - ".github/workflows/test-wasm.yml" # This file
+  workflow_dispatch:
+
+jobs:
+  rust-tests:
+    name: Rust Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run Rust tests
+        run: cargo test
+
+  wasm-tests:
+    name: WASM TypeScript Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-wasm-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build WASM package with enhanced TypeScript definitions
+        run: |
+          cd wasm
+          ./build.sh
+
+      - name: Install test dependencies
+        run: |
+          cd wasm/tests
+          bun install
+
+      - name: Run TypeScript tests
+        run: |
+          cd wasm/tests
+          bun test tests/
+
+      - name: Verify package structure
+        run: |
+          cd wasm/pkg
+          ls -la
+          echo "Checking TypeScript definitions..."
+          grep -n "LinLdf" lin_ldf.d.ts | head -5
+          echo "Enhanced types count:"
+          grep -c "export type" lin_ldf.d.ts

@@ -20,6 +20,8 @@ use nom::{
 /// }
 /// ```
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfSignalEncodingType {
     /// Signal encoding type name
     pub encoding_type_name: String,
@@ -30,6 +32,8 @@ pub struct LdfSignalEncodingType {
 
 /// Signal encoding type value in the `Signal_encoding_types` section of a LIN Description File (LDF)
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub enum LdfSignalEncodingTypeValue {
     LogicalValue {
         /// Value

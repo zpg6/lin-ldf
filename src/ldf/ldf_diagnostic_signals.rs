@@ -31,6 +31,8 @@ use nom::{
 /// MasterReqB0: 8, 0 ;
 /// ```
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfDiagnosticSignal {
     /// All identifiers must be unique within the LDF file.
     pub name: String,

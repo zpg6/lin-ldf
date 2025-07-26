@@ -12,6 +12,8 @@ use nom::{
 /// }
 /// ```
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfNodes {
     pub master: MasterNode,
     pub slaves: Vec<Node>,
@@ -19,6 +21,8 @@ pub struct LdfNodes {
 
 /// Master node in the `Nodes` section of a LIN Description File (LDF) for LIN 2.1
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct MasterNode {
     // Identifier after the Master reserved word specifies the master node.
     // All identifiers must be unique within the LDF file.
@@ -39,6 +43,8 @@ pub struct MasterNode {
 
 /// Slave node in the `Nodes` section of a LIN Description File (LDF) for LIN 2.1
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct Node {
     // All identifiers must be unique within the LDF file.
     pub name: String,

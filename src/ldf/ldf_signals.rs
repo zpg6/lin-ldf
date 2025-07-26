@@ -8,6 +8,8 @@ use nom::{
 /// The init_value_scalar is used for scalar signals and the init_value_array is used for byte array signals.
 #[derive(Debug, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub enum LdfSignalInitValue {
     Scalar(u8),
     Array(Vec<u8>),
@@ -34,6 +36,8 @@ pub enum LdfSignalInitValue {
 /// <signal_name>: <signal_size>, <init_value>, <published_by> [, <subscribed_by>] ;
 /// ```
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "ts-rs", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts-rs", ts(export))]
 pub struct LdfSignal {
     /// All identifiers must be unique within the LDF file.
     pub name: String,
